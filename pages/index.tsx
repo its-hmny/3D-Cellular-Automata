@@ -1,8 +1,12 @@
-import { Button } from '@chakra-ui/react';
 import type { NextPage } from 'next';
+import Settings from '../components/Settings';
 
 const Home: NextPage = () => {
-  return <Button color="primary">Test</Button>;
+  return (
+    <>
+      <Settings />
+    </>
+  );
 };
 
 export default Home;
