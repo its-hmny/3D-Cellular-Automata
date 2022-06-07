@@ -1,10 +1,10 @@
 import type { NextPage } from 'next';
-import Settings from '../components/Settings';
+import SettingsFab from '../components/SettingsFab';
 
 const Home: NextPage = () => {
   return (
     <>
-      <Settings />
+      <SettingsFab />
     </>
   );
 };
