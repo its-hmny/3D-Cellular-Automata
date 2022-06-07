@@ -8,7 +8,7 @@ import {
   useState,
 } from 'react';
 
-type SimulationSettings = {
+export type SimulationSettings = {
   mode: 'conway' | 'von-neumann';
   survival_threshold: [number, number];
   spawn_threshold: [number, number];
