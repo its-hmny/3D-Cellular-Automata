@@ -1,5 +1,6 @@
 import { ChakraProvider, extendTheme } from '@chakra-ui/react';
 import type { AppProps } from 'next/app';
+import { SimulationProvider } from '../context/Simulation';
 
 function MyApp({ Component, pageProps }: AppProps) {
   // Overrides/merges the default theme with new values
@@ -7,7 +8,9 @@ function MyApp({ Component, pageProps }: AppProps) {
 
   return (
     <ChakraProvider theme={theme}>
-      <Component {...pageProps} />
+      <SimulationProvider>
+        <Component {...pageProps} />
+      </SimulationProvider>
     </ChakraProvider>
   );
 }
