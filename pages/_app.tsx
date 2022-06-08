@@ -1,18 +1,12 @@
-import { ChakraProvider, extendTheme } from '@chakra-ui/react';
 import type { AppProps } from 'next/app';
 import { SimulationProvider } from '../context/Simulation';
 
-function MyApp({ Component, pageProps }: AppProps) {
-  // Overrides/merges the default theme with new values
-  const theme = extendTheme({}); // TODO add personal theming options
-
+const MyApp = ({ Component, pageProps }: AppProps) => {
   return (
-    <ChakraProvider theme={theme}>
-      <SimulationProvider>
-        <Component {...pageProps} />
-      </SimulationProvider>
-    </ChakraProvider>
+    <SimulationProvider>
+      <Component {...pageProps} />
+    </SimulationProvider>
   );
-}
+};
 
 export default MyApp;
