@@ -3,6 +3,8 @@ import { SettingsOption } from 'grommet-icons';
 import type { NextPage } from 'next';
 import { useState } from 'react';
 import Drawer from '../components/Drawer';
+import SettingsForm from '../components/SettingsForm';
+
 const Style = {
   // Fab button styling
   Fab: { position: 'fixed', top: '2em', left: '2em', zIndex: 1 },
@@ -14,6 +16,7 @@ const Home: NextPage = () => {
 
   return (
     <div id="home">
+      {/* Fab Button */}
       <Button
         auto
         flat
@@ -26,7 +29,9 @@ const Home: NextPage = () => {
         Settings
       </Button>
 
-      <Drawer isOpen={isOpen} onClose={() => setOpen(prev => !prev)} />
+      <Drawer isOpen={isOpen} onClose={() => setOpen(prev => !prev)}>
+        <SettingsForm />
+      </Drawer>
     </div>
   );
 };

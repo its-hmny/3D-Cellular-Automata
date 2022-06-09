@@ -1,5 +1,7 @@
 import { Card, Grid, Text } from '@nextui-org/react';
 import { Close } from 'grommet-icons';
+import { ReactNode } from 'react';
+
 const Style = {
   // Drawer's general styling
   Drawer: {
@@ -20,9 +22,10 @@ const Style = {
 interface DrawerProps {
   isOpen: boolean;
   onClose: () => void;
+  children: ReactNode;
 }
 
-const Drawer = ({ isOpen, onClose }: DrawerProps) => {
+const Drawer = ({ isOpen, onClose, children }: DrawerProps) => {
   // Drawer closed, nothing to show
   if (!isOpen) return <></>;
 
@@ -36,7 +39,7 @@ const Drawer = ({ isOpen, onClose }: DrawerProps) => {
             <Close onClick={onClose} />
           </Grid>
           <Grid xs={12}>
-            <Text css={{ color: '$accents8' }}>
+            <Text css={Style.Subtitle}>
               Here you will be able to tweak your simulation settings. <br />
               Different simulation settings with the same initial seed could generate
               radically different Cellular Automata.
@@ -45,16 +48,9 @@ const Drawer = ({ isOpen, onClose }: DrawerProps) => {
           </Grid>
         </Grid.Container>
       </Card.Header>
-      <Card.Body>
-        <Grid.Container gap={1}>
-          <Grid xs={12}>
-            <Text h6 size={15}>
-              NextUI gives you the best developer experience with all the features you
-              need for building beautiful and modern websites and applications.
-            </Text>
-          </Grid>
-        </Grid.Container>
-      </Card.Body>
+
+      {/* Drawer Body */}
+      <Card.Body>{children}</Card.Body>
     </Card>
   );
 };
