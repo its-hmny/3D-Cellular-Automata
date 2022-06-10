@@ -1,5 +1,5 @@
-import { Button, Grid, Input, Radio, Spacer, Text } from '@nextui-org/react';
-import { Checkmark, Close, Refresh, UploadOption } from 'grommet-icons';
+import { Button, Grid, Input, Radio, Spacer } from '@nextui-org/react';
+import { Checkmark, Close } from 'grommet-icons';
 
 const SettingsForm = () => {
   return (

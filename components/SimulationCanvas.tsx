@@ -1,5 +1,6 @@
 import { OrbitControls } from '@react-three/drei';
 import { Canvas } from '@react-three/fiber';
+import { randomBytes } from 'crypto';
 import { ReactNode, useMemo } from 'react';
 import Cell from './Cell';
 
@@ -18,7 +19,13 @@ const SimulationCanvas = () => {
     for (let x = maxIndex; x < minIndex; x++) {
       for (let y = maxIndex; y < minIndex; y++) {
         for (let z = maxIndex; z < minIndex; z++) {
-          vector.push(<Cell key={`${x}${y}${z}`} {...{ x, y, z }} age={x * y * z} />);
+          vector.push(
+            <Cell
+              key={`${x}${y}${z}`}
+              {...{ x, y, z }}
+              age={randomBytes(32).readUInt32BE()}
+            />
+          );
         }
       }
     }
