@@ -2,6 +2,7 @@ import { Button } from '@nextui-org/react';
 import { SettingsOption } from 'grommet-icons';
 import type { NextPage } from 'next';
 import { useState } from 'react';
+import SimulationCanvas from '../components/SimulationCanvas';
 import Drawer from '../components/Drawer';
 import SettingsForm from '../components/SettingsForm';
 
@@ -15,7 +16,7 @@ const Home: NextPage = () => {
   const [isOpen, setOpen] = useState(false);
 
   return (
-    <div id="home">
+    <>
       {/* Fab Button */}
       <Button
         auto
@@ -32,7 +33,9 @@ const Home: NextPage = () => {
       <Drawer isOpen={isOpen} onClose={() => setOpen(prev => !prev)}>
         <SettingsForm />
       </Drawer>
-    </div>
+
+      <SimulationCanvas />
+    </>
   );
 };
 
