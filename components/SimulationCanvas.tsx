@@ -1,37 +1,32 @@
 import { OrbitControls } from '@react-three/drei';
 import { Canvas } from '@react-three/fiber';
-import { randomBytes } from 'crypto';
 import { ReactNode, useMemo } from 'react';
+
+import { useSimulation } from '../context/Simulation';
 import Cell from './Cell';
 
 const SimulationCanvas = () => {
-  const nDimension = 15;
+  const { settings, matrix } = useSimulation();
 
   // Memoized version of the camera position bases on the number of cells in the matrix
-  const position = useMemo(() => [2, 1, nDimension + 2], [nDimension]);
+  const position = useMemo(() => [2, 1, settings.dimension + 5], [settings.dimension]);
 
   // Memoized version of the matrix, each cell will update autonomously
-  const matrix = useMemo(() => {
+  const ToRender = useMemo(() => {
+    // Vector with aggregate list of cell to be rendered
     const vector: Array<ReactNode> = [];
-    const minIndex = nDimension / 2;
-    const maxIndex = nDimension / -2;
 
-    for (let x = maxIndex; x < minIndex; x++) {
-      for (let y = maxIndex; y < minIndex; y++) {
-        for (let z = maxIndex; z < minIndex; z++) {
-          vector.push(
-            <Cell
-              key={`${x}${y}${z}`}
-              {...{ x, y, z }}
-              age={randomBytes(32).readUInt32BE()}
-            />
-          );
-        }
-      }
-    }
+    // Min and max offset from cube/matrix center (dim/2, dim/2, dim/2)
+    const minIndex = settings.dimension / 2;
+    const maxIndex = settings.dimension / -2;
+
+    for (let x = maxIndex; x < minIndex; x++)
+      for (let y = maxIndex; y < minIndex; y++)
+        for (let z = maxIndex; z < minIndex; z++)
+          vector.push(<Cell key={`${x}${y}${z}`} {...{ x, y, z, matrix }} />);
 
     return vector;
-  }, []);
+  }, [matrix, settings.dimension]);
 
   return (
     <Canvas
@@ -44,8 +39,9 @@ const SimulationCanvas = () => {
       <pointLight position={[10, 10, 10]} />
       {/* Simply allows to "navigate" the canvas */}
       <OrbitControls enablePan={true} enableZoom={true} enableRotate={true} />
+
       {/* The cell that compose the Automata */}
-      {matrix}
+      {ToRender}
     </Canvas>
   );
 };
