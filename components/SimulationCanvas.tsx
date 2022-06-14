@@ -9,7 +9,7 @@ const SimulationCanvas = () => {
   const { settings, matrix } = useSimulation();
 
   // Memoized version of the camera position bases on the number of cells in the matrix
-  const position = useMemo(() => [2, 1, settings.dimension + 5], [settings.dimension]);
+  const position = useMemo(() => [2, 1, settings.matrix_dim + 5], [settings.matrix_dim]);
 
   // Memoized version of the matrix, each cell will update autonomously
   const ToRender = useMemo(() => {
@@ -17,8 +17,8 @@ const SimulationCanvas = () => {
     const vector: Array<ReactNode> = [];
 
     // Min and max offset from cube/matrix center (dim/2, dim/2, dim/2)
-    const minIndex = settings.dimension / 2;
-    const maxIndex = settings.dimension / -2;
+    const minIndex = settings.matrix_dim / 2;
+    const maxIndex = settings.matrix_dim / -2;
 
     for (let x = maxIndex; x < minIndex; x++)
       for (let y = maxIndex; y < minIndex; y++)
@@ -26,7 +26,7 @@ const SimulationCanvas = () => {
           vector.push(<Cell key={`${x}${y}${z}`} {...{ x, y, z, matrix }} />);
 
     return vector;
-  }, [matrix, settings.dimension]);
+  }, [matrix, settings.matrix_dim]);
 
   return (
     <Canvas
