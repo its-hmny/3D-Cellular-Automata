@@ -8,6 +8,7 @@ import {
   useRef,
   useState,
 } from 'react';
+import { sayHello } from '../core/assembly';
 import { DefaultSettings } from '../schema/constant';
 import { Settings } from '../schema/types';
 
@@ -58,6 +59,7 @@ export const SimulationProvider = ({ children }: { children: ReactNode }) => {
 
   // Whenever the settings changes the simulator is reset and restarted
   useEffect(() => {
+    console.log(sayHello());
     // Allocates or overwrites shared buffer filled with a random seed
     // TODO COMPLETE => age_matrix.current = setupSimulator(settings);
     // TODO COMPLETE => restart the simulation from the initial seed

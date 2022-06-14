@@ -1248,7 +1248,7 @@
   resolved "https://registry.yarnpkg.com/@use-gesture/core/-/core-10.2.15.tgz#ed55e85211eb6129a7979f177f1831d078087d22"
   integrity sha512-R8k5GHKR6J3n48K1xiWCBSnTsxmfiVCp+MYPMhFaoHT1/oIjrFA6SeMmWDl0REwP/CpBfNdQ0FwOo/0dGjPhwA==
 
-"@use-gesture/react@^10.2.0", "@use-gesture/react@^10.2.15":
+"@use-gesture/react@^10.2.0":
   version "10.2.15"
   resolved "https://registry.yarnpkg.com/@use-gesture/react/-/react-10.2.15.tgz#67cf755eb15c1a7feaa2d2ecd372bef485486e61"
   integrity sha512-Hdfp17a3iHDo33jasd8GIPlIjM4wxNzn1O9apNX2VrF7X2ewzXp4wCCQ4aPqsnyvBA1WhR8KHMrBS/XWQZxTHQ==
@@ -1356,6 +1356,14 @@ array.prototype.flatmap@^1.2.5:
     es-abstract "^1.19.2"
     es-shim-unscopables "^1.0.0"
 
+assemblyscript@^0.20.11:
+  version "0.20.11"
+  resolved "https://registry.yarnpkg.com/assemblyscript/-/assemblyscript-0.20.11.tgz#cf2b0c70cc8657757673cf06cc372530ed17f73c"
+  integrity sha512-DqzqE4oVmrErlTTockRg01Hhe0HZmR8iIuudclQ6o4QFCG7lDnq9f+jgxRtNQaj12fKb17ukWmqcqvDWAXN3Gg==
+  dependencies:
+    binaryen "108.0.0-nightly.20220528"
+    long "^5.2.0"
+
 ast-types-flow@^0.0.7:
   version "0.0.7"
   resolved "https://registry.yarnpkg.com/ast-types-flow/-/ast-types-flow-0.0.7.tgz#f70b735c6bca1a5c9c22d982c3e39e7feba3bdad"
@@ -1403,6 +1411,11 @@ binary-extensions@^2.0.0:
   version "2.2.0"
   resolved "https://registry.yarnpkg.com/binary-extensions/-/binary-extensions-2.2.0.tgz#75f502eeaf9ffde42fc98829645be4ea76bd9e2d"
   integrity sha512-jDctJ/IVQbZoJykoeHbhXpOlNBqGNcwXJKJog42E5HDPUwQTSdjCHdihjj0DlnheQ7blbT6dHOafNAiS8ooQKA==
+
+binaryen@108.0.0-nightly.20220528:
+  version "108.0.0-nightly.20220528"
+  resolved "https://registry.yarnpkg.com/binaryen/-/binaryen-108.0.0-nightly.20220528.tgz#55e50ec50dc3cded36ad02e68ec69eb69bbb1e7b"
+  integrity sha512-9biG357fx3NXmJNotIuY9agZBcCNHP7d1mgOGaTlPYVHZE7/61lt1IyHCXAL+W5jUOYgmFZ260PR4IbD19RKuA==
 
 brace-expansion@^1.1.7:
   version "1.1.11"
@@ -2419,6 +2432,11 @@ lodash@4.17.21, lodash@^4.17.11:
   version "4.17.21"
   resolved "https://registry.yarnpkg.com/lodash/-/lodash-4.17.21.tgz#679591c564c3bffaae8454cf0b3df370c3d6911c"
   integrity sha512-v2kDEe57lecTulaDIuNTPy3Ry4gLGJ6Z1O3vE1krgXZNrsQ+LFTGHVxVjcXPs17LhbZVGedAJv8XZ1tvj5FvSg==
+
+long@^5.2.0:
+  version "5.2.0"
+  resolved "https://registry.yarnpkg.com/long/-/long-5.2.0.tgz#2696dadf4b4da2ce3f6f6b89186085d94d52fd61"
+  integrity sha512-9RTUNjK60eJbx3uz+TEGF7fUr29ZDxR5QzXcyDpeSfeH28S9ycINflOgOlppit5U+4kNTe83KQnMEerw7GmE8w==
 
 loose-envify@^1.1.0, loose-envify@^1.4.0:
   version "1.4.0"

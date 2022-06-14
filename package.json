@@ -11,6 +11,8 @@
     "url": "https://github.com/its-hmny/3D-Cellular-Automata.git"
   },
   "scripts": {
+    "asbuild:debug": "asc core/assembly/index.ts --target debug",
+    "asbuild:release": "asc core/assembly/index.ts --target release",
     "build:all": "next build",
     "build:html": "next build && next export",
     "chore:format": "prettier --write 'pages/*' 'components/*'",
@@ -30,6 +32,7 @@
     "@types/node": "17.0.34",
     "@types/react": "18.0.9",
     "@types/react-dom": "18.0.4",
+    "assemblyscript": "^0.20.11",
     "eslint": "8.15.0",
     "eslint-config-next": "12.1.6",
     "grommet-icons": "^4.7.0",
