@@ -1,7 +1,7 @@
 import { Button, Grid, Input, Radio, Spacer } from '@nextui-org/react';
 import { Checkmark, Close } from 'grommet-icons';
 
-const SettingsForm = () => {
+const Form = () => {
   return (
     <Grid.Container gap={2}>
       <Grid xs={6} justify="center">
@@ -96,4 +96,4 @@ const SettingsForm = () => {
   );
 };
 
-export default SettingsForm;
+export default Form;

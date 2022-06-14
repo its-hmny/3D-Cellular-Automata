@@ -4,7 +4,7 @@ import { ReactNode, useMemo } from 'react';
 import { useSimulation } from '../context/Simulation';
 import Cell from './Cell';
 
-const SimulationCanvas = () => {
+const Simulator = () => {
   // Retrieves the needed data from the SimulationContext
   const { settings, age_matrix } = useSimulation();
 
@@ -52,4 +52,4 @@ const SimulationCanvas = () => {
   );
 };
 
-export default SimulationCanvas;
+export default Simulator;

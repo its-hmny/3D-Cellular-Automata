@@ -2,9 +2,9 @@ import { Button } from '@nextui-org/react';
 import { SettingsOption } from 'grommet-icons';
 import type { NextPage } from 'next';
 import { useState } from 'react';
-import SimulationCanvas from '../components/SimulationCanvas';
 import Drawer from '../components/Drawer';
-import SettingsForm from '../components/SettingsForm';
+import Form from '../components/Form';
+import Simulator from '../components/Simulator';
 
 const Style = {
   // Fab button styling
@@ -31,10 +31,10 @@ const Home: NextPage = () => {
       </Button>
 
       <Drawer isOpen={isOpen} onClose={() => setOpen(prev => !prev)}>
-        <SettingsForm />
+        <Form />
       </Drawer>
 
-      <SimulationCanvas />
+      <Simulator />
     </>
   );
 };
