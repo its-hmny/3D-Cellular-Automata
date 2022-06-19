@@ -1,5 +1,5 @@
-import { MeshStandardMaterialProps, useFrame } from '@react-three/fiber';
-import { MutableRefObject, useMemo, useRef } from 'react';
+import { useFrame } from '@react-three/fiber';
+import { MutableRefObject, useMemo, useState } from 'react';
 
 type Props = {
   position: [number, number, number];
@@ -7,9 +7,9 @@ type Props = {
 };
 
 const Cell = ({ position, age_matrix }: Props) => {
+  const color_base_multiplier = 100_000_000;
   // ! age_matrix must be passed as props since React doesn't support context in canvas
-  // Reference to the mesh standard material (MSM) component
-  const msm_ref = useRef<MeshStandardMaterialProps>(null);
+  const [color, setColor] = useState<number | undefined>(undefined);
 
   // The index to be used to retrieve the age counter in the age_matrix (linearized)
   const age_matrix_idx = useMemo(() => {
@@ -24,20 +24,16 @@ const Cell = ({ position, age_matrix }: Props) => {
 
   // Subscribe this component to the render-loop, rotate the mesh every frame
   useFrame(() => {
-    // If the mesh reference hasn't been populated skips the current frame
-    if (!msm_ref.current) return;
-
     // Uses the index to retrieve the age counter in the linearized age_matrix
     const cellAge = age_matrix.current?.at(age_matrix_idx) ?? 0;
-    // TODO Complete this hook
-    // ? msmRef.current.visible = cellAge !== 0;
-    // ? msmRef.current.color = cellAge + 1 * 25_000;
+    // Based on the cellAge sets the cell color
+    setColor(cellAge !== 0 ? cellAge * color_base_multiplier : undefined);
   });
 
   return (
     <mesh scale={0.9} position={position}>
       <boxGeometry args={[1, 1, 1]} />
-      <meshStandardMaterial ref={msm_ref} color="orange" />
+      <meshStandardMaterial visible={color !== undefined} color={color} />
     </mesh>
   );
 };
