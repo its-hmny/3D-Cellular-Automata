@@ -8,7 +8,7 @@ import {
   useRef,
   useState,
 } from 'react';
-import { sayHello } from '../core/assembly';
+import { Simulator } from '../core/assembly';
 import { DefaultSettings } from '../schema/constant';
 import { Settings } from '../schema/types';
 
@@ -24,7 +24,7 @@ type SimulationCtx = {
   // The simulator's setting (with rules and thresholds)
   settings: Settings;
   // The cell's age counter (0 is dead, x > 0 is alive)
-  age_matrix: MutableRefObject<Buffer | null>;
+  age_matrix: MutableRefObject<Uint8Array | undefined>;
   // Setter function to mutate the settings state and reset the simulation
   mutate: (newSettings: Partial<Settings>) => void;
 };
@@ -47,7 +47,7 @@ export const useSimulation = () => {
 
 export const SimulationProvider = ({ children }: { children: ReactNode }) => {
   // Mutable, shared and readonly reference to the cells age buffer (a linearized matrix)
-  const age_matrix = useRef<Buffer>(null);
+  const age_matrix = useRef<Uint8Array>();
   // Data state to save chain id and wallet address, this can be changed also from Metamask
   const [settings, setSettings] = useState<Settings>(DefaultSettings);
 
@@ -59,13 +59,21 @@ export const SimulationProvider = ({ children }: { children: ReactNode }) => {
 
   // Whenever the settings changes the simulator is reset and restarted
   useEffect(() => {
-    console.log(sayHello());
-    // Allocates or overwrites shared buffer filled with a random seed
-    // TODO COMPLETE => age_matrix.current = setupSimulator(settings);
-    // TODO COMPLETE => restart the simulation from the initial seed
-
+    // Creates a new simulator with the current provided settings
+    const simulator = new Simulator(settings);
+    // Sets the current age_matrix reference to the current generation
+    age_matrix.current = simulator.CurrentGeneration();
     // ! Debug only, remove later...
     console.log('BP__ useSimulation', settings, age_matrix);
+
+    // Every one second a new generation is created and set as the current one
+    const intervalId = setInterval(() => {
+      simulator.NewGeneration();
+      age_matrix.current = simulator.CurrentGeneration();
+    }, 250);
+
+    // Cleanup functions, removes the inteval
+    return () => clearInterval(intervalId);
   }, [settings]);
 
   return (
