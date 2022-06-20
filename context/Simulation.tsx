@@ -70,7 +70,7 @@ export const SimulationProvider = ({ children }: { children: ReactNode }) => {
     const intervalId = setInterval(() => {
       simulator.NewGeneration();
       age_matrix.current = simulator.CurrentGeneration();
-    }, 250);
+    }, 100);
 
     // Cleanup functions, removes the inteval
     return () => clearInterval(intervalId);

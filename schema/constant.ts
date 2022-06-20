@@ -5,9 +5,9 @@ import { Settings } from './types';
  * @constant @type {Settings}
  */
 export const DefaultSettings: Settings = {
-  mode: 'conway',
+  mode: 'von-neumann',
   dimension: 10,
-  spawn_threshold: 20,
-  survive_threshold: 10,
-  max_life_expectancy: 5,
+  spawn_threshold: 14,
+  survive_threshold: 8,
+  max_life_expectancy: 13,
 };
