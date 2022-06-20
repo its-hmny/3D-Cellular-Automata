@@ -1,3 +1,4 @@
+type Position = [number, number, number];
 class Settings {
   // The first considers only the six adjacent neighbor
   mode: string; // 'conway' | 'von-neumann';
@@ -40,9 +41,77 @@ export class Simulator {
     }
   }
 
+  private CountNeighbors(pos: Position, prev: Uint8Array): number {
+    let neighborCount = 0;
+    const [x, y, z] = pos;
+    const { dimension: dim_length, mode } = this.settings;
+
+    function IsInBoundaries(delta: number, start: number): boolean {
+      return delta <= start + 1 && delta >= 0 && delta <= dim_length;
+    }
+
+    function IsConwayNeighbor(cell: Position, neighbor: Position): boolean {
+      return false;
+    }
+
+    function IsVNeumannNeighbor(cell: Position, neighbor: Position): boolean {
+      for (let coordIdx = 0; coordIdx < 3; coordIdx++) {
+        if (cell[coordIdx] != neighbor[coordIdx]) return true;
+      }
+
+      return false;
+    }
+
+    for (let deltaX = x - 1; IsInBoundaries(deltaX, x); deltaX++) {
+      for (let deltaY = y - 1; IsInBoundaries(deltaY, y); deltaY++) {
+        for (let deltaZ = z - 1; IsInBoundaries(deltaZ, z); deltaZ++) {
+          // Linearizes the index to access the array
+          const bufferIdx =
+            deltaX + dim_length * deltaY + dim_length * dim_length * deltaZ;
+          // Retrieves the current neighbor state
+          const neighborState = prev[bufferIdx];
+
+          if (mode === 'conway' && IsConwayNeighbor(pos, [deltaX, deltaY, deltaZ]))
+            neighborState !== 0 && neighborCount++;
+
+          if (mode === 'von-neumann' && IsVNeumannNeighbor(pos, [deltaX, deltaY, deltaZ]))
+            neighborState !== 0 && neighborCount++;
+        }
+      }
+    }
+
+    return neighborCount;
+  }
+
+  private DetermineCellState(cell_state: number, n_neighbors: number): number {
+    // If the cell is dead but the spawn threshold has been reached then the cell is born
+    if (cell_state === 0 && n_neighbors >= this.settings.spawn_threshold)
+      return this.settings.max_life_expectancy;
+
+    // If the cell is alive and the survive threshold has been reached then the cell is aged
+    if (cell_state !== 0 && n_neighbors >= this.settings.survive_threshold)
+      return --cell_state;
+
+    return 0; // Else the cell stays dead
+  }
+
   private DeriveFromGeneration(oldGen: Uint8Array, newGen: Uint8Array): void {
-    // TODO Implement the simulation algorithm
-    this.CreateRandomSeed(newGen);
+    // Local copy of the max dimension reachable by an position coordinate
+    const dim_length = this.settings.dimension;
+
+    // Iterates over the full three dimensional matrix
+    for (let x = 0; x < dim_length; x++) {
+      for (let y = 0; y < dim_length; y++) {
+        for (let z = 0; z < dim_length; z++) {
+          // Count the cell alive neighbors
+          const nNeighbors = this.CountNeighbors([x, y, z], oldGen);
+          // Linearizes the index to access the array
+          const bufferIdx = x + dim_length * y + dim_length * dim_length * z;
+          // Updates the cell age in the new generation
+          newGen[bufferIdx] = this.DetermineCellState(oldGen[bufferIdx], nNeighbors);
+        }
+      }
+    }
   }
 
   public CurrentGeneration(): Uint8Array {
