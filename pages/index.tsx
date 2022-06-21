@@ -2,9 +2,9 @@ import { Button } from '@nextui-org/react';
 import { SettingsOption } from 'grommet-icons';
 import type { NextPage } from 'next';
 import { useState } from 'react';
+import Automata from '../components/Automata';
 import Drawer from '../components/Drawer';
 import Form from '../components/Form';
-import Simulator from '../components/Simulator';
 
 const Style = {
   // Fab button styling
@@ -17,7 +17,7 @@ const Home: NextPage = () => {
 
   return (
     <>
-      {/* Fab Button */}
+      {/* Fab button */}
       <Button
         auto
         flat
@@ -30,11 +30,13 @@ const Home: NextPage = () => {
         Settings
       </Button>
 
+      {/* Drawer with settings form */}
       <Drawer isOpen={isOpen} onClose={() => setOpen(prev => !prev)}>
         <Form />
       </Drawer>
 
-      <Simulator />
+      {/* Three.js canvas with full automata rendering */}
+      <Automata />
     </>
   );
 };

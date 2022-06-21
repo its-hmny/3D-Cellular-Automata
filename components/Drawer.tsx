@@ -19,13 +19,9 @@ const Style = {
   Subtitle: { color: '$accents8' },
 };
 
-interface DrawerProps {
-  isOpen: boolean;
-  onClose: () => void;
-  children: ReactNode;
-}
+type Props = { isOpen: boolean; onClose: () => void; children: ReactNode };
 
-const Drawer = ({ isOpen, onClose, children }: DrawerProps) => {
+const Drawer = ({ isOpen, onClose, children }: Props) => {
   // Drawer closed, nothing to show
   if (!isOpen) return <></>;
 
