@@ -24,7 +24,7 @@ type SimulationCtx = {
   // The simulator's setting (with rules and thresholds)
   settings: Settings;
   // The cell's age counter (0 is dead, x > 0 is alive)
-  age_matrix: MutableRefObject<Uint8Array | undefined>;
+  ageMatrix: MutableRefObject<Uint8Array | undefined>;
   // Setter function to mutate the settings state and reset the simulation
   mutate: (newSettings: Partial<Settings>) => void;
 };
@@ -47,7 +47,7 @@ export const useSimulation = () => {
 
 export const SimulationProvider = ({ children }: { children: ReactNode }) => {
   // Mutable, shared and readonly reference to the cells age buffer (a linearized matrix)
-  const age_matrix = useRef<Uint8Array>();
+  const ageMatrix = useRef<Uint8Array>();
   // Data state to save chain id and wallet address, this can be changed also from Metamask
   const [settings, setSettings] = useState<Settings>(DefaultSettings);
 
@@ -62,14 +62,15 @@ export const SimulationProvider = ({ children }: { children: ReactNode }) => {
     // Creates a new simulator with the current provided settings
     const simulator = new Simulator(settings);
     // Sets the current age_matrix reference to the current generation
-    age_matrix.current = simulator.CurrentGeneration();
+    ageMatrix.current = simulator.CurrentGeneration();
+
     // ! Debug only, remove later...
-    console.log('BP__ useSimulation', settings, age_matrix);
+    console.log('BP__ useSimulation', settings, ageMatrix);
 
     // Every one second a new generation is created and set as the current one
     const intervalId = setInterval(() => {
       simulator.NewGeneration();
-      age_matrix.current = simulator.CurrentGeneration();
+      ageMatrix.current = simulator.CurrentGeneration();
     }, 100);
 
     // Cleanup functions, removes the inteval
@@ -77,7 +78,7 @@ export const SimulationProvider = ({ children }: { children: ReactNode }) => {
   }, [settings]);
 
   return (
-    <SimulationContext.Provider value={{ age_matrix, settings, mutate: mutate }}>
+    <SimulationContext.Provider value={{ ageMatrix, settings, mutate: mutate }}>
       {children}
     </SimulationContext.Provider>
   );

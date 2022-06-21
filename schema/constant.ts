@@ -7,7 +7,7 @@ import { Settings } from './types';
 export const DefaultSettings: Settings = {
   mode: 'conway',
   dimension: 10,
-  spawn_threshold: 4,
-  survive_threshold: 3,
-  max_life_expectancy: 15,
+  spawnThreshold: 4,
+  surviveThreshold: 3,
+  maxLifeExpectancy: 15,
 };

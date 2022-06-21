@@ -1,15 +1,15 @@
-type Position = [number, number, number];
+type Coords = [number, number, number];
 class Settings {
   // The first considers only the six adjacent neighbor
   mode: string; // 'conway' | 'von-neumann';
   // The desired dimension of each side in the 3D space
   dimension: number;
   // The number of required neighbor in order to spawn a new cell
-  spawn_threshold: number;
+  spawnThreshold: number;
   // The number of required neighbor in order for a cell to survive
-  survive_threshold: number;
+  surviveThreshold: number;
   // The max life expectancy of every cell of the Automata
-  max_life_expectancy: number;
+  maxLifeExpectancy: number;
 }
 export class Simulator {
   // Private local copy of the simulator settings
@@ -36,12 +36,12 @@ export class Simulator {
 
   private CreateRandomSeed(buffer: Uint8Array): void {
     for (let offset = 0; offset < buffer.length; offset++) {
-      const random = Math.random() * (this.settings.max_life_expectancy + 1);
+      const random = Math.random() * (this.settings.maxLifeExpectancy + 1);
       buffer[offset] = Math.floor(random);
     }
   }
 
-  private CountNeighbors(pos: Position, prev: Uint8Array): number {
+  private CountNeighbors(pos: Coords, prev: Uint8Array): number {
     let neighborCount = 0;
     const [x, y, z] = pos;
     const { dimension: dim_length, mode } = this.settings;
@@ -50,13 +50,13 @@ export class Simulator {
       return delta <= start + 1 && delta >= 0 && delta <= dim_length;
     }
 
-    function IsConwayNeighbor(cell: Position, neighbor: Position): boolean {
+    function IsConwayNeighbor(cell: Coords, neighbor: Coords): boolean {
       const [xa, ya, za] = cell;
       const [xb, yb, zb] = neighbor;
       return Math.abs(xa - xb) + Math.abs(ya - yb) + Math.abs(za - zb) === 1;
     }
 
-    function IsVNeumannNeighbor(cell: Position, neighbor: Position): boolean {
+    function IsVNeumannNeighbor(cell: Coords, neighbor: Coords): boolean {
       for (let coordIdx = 0; coordIdx < 3; coordIdx++) {
         if (cell[coordIdx] != neighbor[coordIdx]) return true;
       }
@@ -87,11 +87,11 @@ export class Simulator {
 
   private DetermineCellState(cell_state: number, n_neighbors: number): number {
     // If the cell is dead but the spawn threshold has been reached then the cell is born
-    if (cell_state === 0 && n_neighbors >= this.settings.spawn_threshold)
-      return this.settings.max_life_expectancy;
+    if (cell_state === 0 && n_neighbors >= this.settings.spawnThreshold)
+      return this.settings.maxLifeExpectancy;
 
     // If the cell is alive and the survive threshold has been reached then the cell is aged
-    if (cell_state !== 0 && n_neighbors >= this.settings.survive_threshold)
+    if (cell_state !== 0 && n_neighbors >= this.settings.surviveThreshold)
       return --cell_state;
 
     return 0; // Else the cell stays dead

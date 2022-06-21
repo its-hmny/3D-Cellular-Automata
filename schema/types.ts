@@ -1,7 +1,13 @@
 /**
+ * Three dimension coordinates/cell position
+ * @type @alias Coords
+ */
+export type Coords = [number, number, number];
+
+/**
  * Data, rules and configuration params for the Cellular
  * Automata simulation algorithm
- * @type  @alias Settings
+ * @type @alias Settings
  */
 export type Settings = {
   // The first considers only the six adjacent neighbor
@@ -9,9 +15,9 @@ export type Settings = {
   // The desired dimension of each side in the 3D space
   dimension: number;
   // The number of required neighbor in order to spawn a new cell
-  spawn_threshold: number;
+  spawnThreshold: number;
   // The number of required neighbor in order for a cell to survive
-  survive_threshold: number;
+  surviveThreshold: number;
   // The max life expectancy of every cell of the Automata
-  max_life_expectancy: number;
+  maxLifeExpectancy: number;
 };
