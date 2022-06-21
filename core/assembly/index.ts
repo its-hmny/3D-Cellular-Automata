@@ -51,7 +51,9 @@ export class Simulator {
     }
 
     function IsConwayNeighbor(cell: Position, neighbor: Position): boolean {
-      return false;
+      const [xa, ya, za] = cell;
+      const [xb, yb, zb] = neighbor;
+      return Math.abs(xa - xb) + Math.abs(ya - yb) + Math.abs(za - zb) === 1;
     }
 
     function IsVNeumannNeighbor(cell: Position, neighbor: Position): boolean {
