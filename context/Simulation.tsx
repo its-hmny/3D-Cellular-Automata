@@ -26,7 +26,7 @@ type SimulationCtx = {
   // The cell's age counter (0 is dead, x > 0 is alive)
   ageMatrix: MutableRefObject<Uint8Array | undefined>;
   // Setter function to mutate the settings state and reset the simulation
-  mutate: (newSettings: Partial<Settings>) => void;
+  mutate: (newSettings: Settings) => void;
 };
 
 /**
@@ -78,7 +78,7 @@ export const SimulationProvider = ({ children }: { children: ReactNode }) => {
   }, [settings]);
 
   return (
-    <SimulationContext.Provider value={{ ageMatrix, settings, mutate: mutate }}>
+    <SimulationContext.Provider value={{ ageMatrix, settings, mutate: setSettings }}>
       {children}
     </SimulationContext.Provider>
   );

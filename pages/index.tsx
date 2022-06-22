@@ -5,6 +5,8 @@ import { useState } from 'react';
 import Automata from '../components/Automata';
 import Drawer from '../components/Drawer';
 import Form from '../components/Form';
+import { useSimulation } from '../context/Simulation';
+import { Settings } from '../schema/types';
 
 const Style = {
   // Fab button styling
@@ -12,8 +14,14 @@ const Style = {
 };
 
 const Home: NextPage = () => {
+  const { mutate } = useSimulation();
   // Internal state to open/close the Drawer
   const [isOpen, setOpen] = useState(false);
+
+  // Aggreagate function that mutates the context and closes the modal onSave
+  const onSaveSettings = (newSettings: Settings) => {
+    mutate(newSettings), setOpen(prev => !prev);
+  };
 
   return (
     <>
@@ -22,7 +30,6 @@ const Home: NextPage = () => {
         auto
         flat
         rounded
-        color="warning"
         css={Style.Fab}
         icon={<SettingsOption />}
         onClick={() => setOpen(prev => !prev)}
@@ -32,7 +39,7 @@ const Home: NextPage = () => {
 
       {/* Drawer with settings form */}
       <Drawer isOpen={isOpen} onClose={() => setOpen(prev => !prev)}>
-        <Form />
+        <Form onDiscard={() => setOpen(prev => !prev)} onSave={onSaveSettings} />
       </Drawer>
 
       {/* Three.js canvas with full automata rendering */}
