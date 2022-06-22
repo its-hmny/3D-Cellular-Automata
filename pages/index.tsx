@@ -30,6 +30,7 @@ const Home: NextPage = () => {
         auto
         flat
         rounded
+        color="warning"
         css={Style.Fab}
         icon={<SettingsOption />}
         onClick={() => setOpen(prev => !prev)}

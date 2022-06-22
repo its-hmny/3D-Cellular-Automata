@@ -38,12 +38,12 @@ const Form = ({ onDiscard, onSave }: Props) => {
       {/* Initial seed managment */}
       <Grid.Container gap={2} css={Style.Section}>
         <Grid xs={6} justify="center">
-          <Button color="primary" flat auto>
+          <Button color="warning" flat auto>
             Generate random seed
           </Button>
         </Grid>
         <Grid xs={6} justify="center">
-          <Button color="primary" flat auto>
+          <Button color="warning" flat auto>
             Import seed from file
           </Button>
         </Grid>

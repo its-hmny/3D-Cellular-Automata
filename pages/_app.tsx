@@ -4,7 +4,7 @@ import { SimulationProvider } from '../context/Simulation';
 import '../styles/style.scss';
 
 const MyApp = ({ Component, pageProps }: AppProps) => {
-  const theme = createTheme({ type: 'dark' });
+  const theme = createTheme({ type: 'dark', theme: { colors: { primary: 'orange' } } });
 
   return (
     <NextUIProvider theme={theme}>
