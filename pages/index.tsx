@@ -1,6 +1,7 @@
 import { Button } from '@nextui-org/react';
 import { SettingsOption } from 'grommet-icons';
 import type { NextPage } from 'next';
+import Head from 'next/head';
 import { useState } from 'react';
 import Automata from '../components/Automata';
 import Drawer from '../components/Drawer';
@@ -25,6 +26,24 @@ const Home: NextPage = () => {
 
   return (
     <>
+      {/* Metatag, Title and SEO optimizations */}
+      <Head>
+        {/* Browser's tab appearance */}
+        <title>3D Cellular Automata</title>
+        <link rel="icon" type="image/x-icon" href="/favicon.ico" />
+
+        {/* General metadata (title, description, author) */}
+        <meta name="language" content="English" />
+        <meta name="title" content="3D Cellular Automata" />
+        <meta name="author" content="Enea Guidi (its-hmny)" />
+        <meta name="description" content="A Three.js webapp to simulate cellular automata in 3D" />
+        <meta name="keywords" content="cellular automata,3D,conway,game of life,three.js,react" />
+
+        {/* Other metatags */}
+        <meta name="robots" content="index, follow" />
+        <meta httpEquiv="Content-Type" content="text/html; charset=utf-8" />
+      </Head>
+
       {/* Fab button */}
       <Button
         auto
