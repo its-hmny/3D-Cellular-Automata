@@ -38,7 +38,6 @@
     "grommet-icons": "^4.7.0",
     "grommet-styles": "^0.2.0",
     "prettier": "^2.6.2",
-    "sass": "^1.52.2",
     "styled-components": "^5.3.5",
     "three": "^0.141.0",
     "typescript": "4.6.4"
