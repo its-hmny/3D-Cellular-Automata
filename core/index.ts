@@ -1,8 +1,8 @@
 import { DefaultSettings } from '../schema/constant';
 import { Coords, Settings } from '../schema/types';
 
+let matrixIdx = false;
 let settings = DefaultSettings;
-let state = { isActive: true, matrixIdx: false };
 let seed = new Uint8Array(settings.dimension ** 3);
 let matrixA = new Uint8Array(settings.dimension ** 3);
 let matrixB = new Uint8Array(settings.dimension ** 3);
@@ -55,7 +55,7 @@ const countAliveNeighbors = (coords: Coords) => {
   let neighborCount = 0; // Counter/accumulator for the alive neighbors
   const [x, y, z] = coords; // Destructures the cell coordinates
   // Based on the state.matrixIdx determines which one is the old generation
-  const oldGen = state.matrixIdx === false ? matrixA : matrixB;
+  const oldGen = matrixIdx === false ? matrixA : matrixB;
 
   // For each polar coordinate p we only evaluate p-1, p and p+1
   for (let deltaX = x - 1; isInBoundaries(deltaX, x); deltaX++) {
@@ -91,8 +91,6 @@ const getNewCellState = (prevState: number, nAliveNeighbors: number) => {
 export const init = (sttngs: Settings) => {
   // Makes a local copy of the settings object (used during simulation)
   settings = sttngs;
-  // Creates a new simulation state, with some default/initial values
-  state = { isActive: true, matrixIdx: false };
 
   // Allocates two new matrixes with the desired dimensions
   matrixA = getRandomSeed();
@@ -103,10 +101,8 @@ export const init = (sttngs: Settings) => {
 
 export const nextGeneration = () => {
   // Based on the state.matrixIdx determines which one is the old and new generation
-  const oldGen = state.matrixIdx === false ? matrixA : matrixB;
-  const newGen = state.matrixIdx === false ? matrixB : matrixA;
-
-  if (!state.isActive) return oldGen; // If the execution has been paused, ignores the call
+  const oldGen = matrixIdx === false ? matrixA : matrixB;
+  const newGen = matrixIdx === false ? matrixB : matrixA;
 
   // Iterates over the full three dimensional matrix
   for (let x = 0; x < settings.dimension; x++) {
@@ -122,12 +118,6 @@ export const nextGeneration = () => {
     }
   }
 
-  state.matrixIdx = !state.matrixIdx; // Flips the state.matrixIdx to the opposite value
+  matrixIdx = !matrixIdx; // Flips the state.matrixIdx to the opposite value
   return newGen; // At last returns the initial generation to the caller
-};
-
-export const controls = {
-  play: () => (state.isActive = true),
-  pause: () => (state.isActive = false),
-  restart: () => ((state.matrixIdx = false), (matrixA = seed)),
 };
