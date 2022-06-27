@@ -1,123 +1,133 @@
+import { DefaultSettings } from '../schema/constant';
 import { Coords, Settings } from '../schema/types';
 
-export class Simulator {
-  // Private local copy of the simulator settings
-  private settings: Settings;
-  // The index of the "active" matrix, the one that has to be rendered
-  private render_matrix_idx: boolean;
-  // Mechanism similar to React's Virtual DOM (VDOM)
-  private matrix_A: Uint8Array;
-  private matrix_B: Uint8Array;
+let settings = DefaultSettings;
+let state = { isActive: true, matrixIdx: false };
+let seed = new Uint8Array(settings.dimension ** 3);
+let matrixA = new Uint8Array(settings.dimension ** 3);
+let matrixB = new Uint8Array(settings.dimension ** 3);
 
-  constructor(init: Settings) {
-    // Copies the setting provided
-    this.settings = init;
+const isInBoundaries = (delta: number, start: number) =>
+  delta <= start + 1 && delta >= 0 && delta < settings.dimension;
 
-    // Allocates two new matrixes with the desired dimensions
-    this.matrix_A = new Uint8Array(init.dimension ** 3);
-    this.matrix_B = new Uint8Array(init.dimension ** 3);
-    // Sets the index to access the render matrix
-    this.render_matrix_idx = false;
+const linearizeCoords = (coords: Coords) => {
+  const [x, y, z] = coords;
+  return x + settings.dimension * y + settings.dimension * settings.dimension * z;
+};
 
-    // Populates the matrix_A with a random seed for later
-    this.CreateRandomSeed(this.matrix_A);
+const validator = {
+  ['conway']: (cell: Coords, neighbor: Coords) => {
+    // Destructures the single components of the cells coordinates
+    const [xa, ya, za] = cell;
+    const [xb, yb, zb] = neighbor;
+    // If the 'normalized' distance between the two is exactly one they're Conway neighbors
+    return Math.abs(xa - xb) + Math.abs(ya - yb) + Math.abs(za - zb) === 1;
+  },
+
+  ['von-neumann']: (cell: Coords, neighbor: Coords) => {
+    // Destructures the single components of the cells coordinates
+    const [xa, ya, za] = cell;
+    const [xb, yb, zb] = neighbor;
+    // Also this would be possible => return xa !== xb && ya !== yb && za !== zb;
+    return Math.abs(xa - xb) + Math.abs(ya - yb) + Math.abs(za - zb) <= 2;
+  },
+};
+
+const getRandomSeed = () => {
+  // Allocates the seed (initial generation) buffer
+  seed = new Uint8Array(settings.dimension ** 3);
+
+  for (let i = 0; i < seed.length; i++) {
+    // In order to improve randomness each iteration has a challenge mechanism.
+    // If the second random number is greater than the first the one is used to
+    // determine a live cell age, else a dead cell (state: 0) is used.
+    const isZerotreshold = Math.random();
+    const randomNumber = Math.random();
+
+    if (randomNumber <= isZerotreshold) seed[i] = 0;
+    else seed[i] = Math.floor(randomNumber * (settings.maxLifeExpectancy + 1));
   }
 
-  private CreateRandomSeed(buffer: Uint8Array): void {
-    for (let offset = 0; offset < buffer.length; offset++) {
-      const random = Math.random() * (this.settings.maxLifeExpectancy + 1);
-      buffer[offset] = Math.floor(random);
-    }
-  }
+  return seed.slice(0, seed.length); // Makes a copy of the seed
+};
 
-  private CountNeighbors(pos: Coords, prev: Uint8Array): number {
-    let neighborCount = 0;
-    const [x, y, z] = pos;
-    const { dimension: dim_length, mode } = this.settings;
+const countAliveNeighbors = (coords: Coords) => {
+  let neighborCount = 0; // Counter/accumulator for the alive neighbors
+  const [x, y, z] = coords; // Destructures the cell coordinates
+  // Based on the state.matrixIdx determines which one is the old generation
+  const oldGen = state.matrixIdx === false ? matrixA : matrixB;
 
-    function IsInBoundaries(delta: number, start: number): boolean {
-      return delta <= start + 1 && delta >= 0 && delta <= dim_length;
-    }
-
-    function IsConwayNeighbor(cell: Coords, neighbor: Coords): boolean {
-      const [xa, ya, za] = cell;
-      const [xb, yb, zb] = neighbor;
-      return Math.abs(xa - xb) + Math.abs(ya - yb) + Math.abs(za - zb) === 1;
-    }
-
-    function IsVNeumannNeighbor(cell: Coords, neighbor: Coords): boolean {
-      for (let coordIdx = 0; coordIdx < 3; coordIdx++) {
-        if (cell[coordIdx] != neighbor[coordIdx]) return true;
-      }
-
-      return false;
-    }
-
-    for (let deltaX = x - 1; IsInBoundaries(deltaX, x); deltaX++) {
-      for (let deltaY = y - 1; IsInBoundaries(deltaY, y); deltaY++) {
-        for (let deltaZ = z - 1; IsInBoundaries(deltaZ, z); deltaZ++) {
-          // Linearizes the index to access the array
-          const bufferIdx =
-            deltaX + dim_length * deltaY + dim_length * dim_length * deltaZ;
-          // Retrieves the current neighbor state
-          const neighborState = prev[bufferIdx];
-
-          if (mode === 'conway' && IsConwayNeighbor(pos, [deltaX, deltaY, deltaZ]))
-            neighborState !== 0 && neighborCount++;
-
-          if (mode === 'von-neumann' && IsVNeumannNeighbor(pos, [deltaX, deltaY, deltaZ]))
-            neighborState !== 0 && neighborCount++;
-        }
-      }
-    }
-
-    return neighborCount;
-  }
-
-  private DetermineCellState(cell_state: number, n_neighbors: number): number {
-    // If the cell is dead but the spawn threshold has been reached then the cell is born
-    if (cell_state === 0 && n_neighbors >= this.settings.spawnThreshold)
-      return this.settings.maxLifeExpectancy;
-
-    // If the cell is alive and the survive threshold has been reached then the cell is aged
-    if (cell_state !== 0 && n_neighbors >= this.settings.surviveThreshold)
-      return --cell_state;
-
-    return 0; // Else the cell stays dead
-  }
-
-  private DeriveFromGeneration(oldGen: Uint8Array, newGen: Uint8Array): void {
-    // Local copy of the max dimension reachable by an position coordinate
-    const dim_length = this.settings.dimension;
-
-    // Iterates over the full three dimensional matrix
-    for (let x = 0; x < dim_length; x++) {
-      for (let y = 0; y < dim_length; y++) {
-        for (let z = 0; z < dim_length; z++) {
-          // Count the cell alive neighbors
-          const nNeighbors = this.CountNeighbors([x, y, z], oldGen);
-          // Linearizes the index to access the array
-          const bufferIdx = x + dim_length * y + dim_length * dim_length * z;
-          // Updates the cell age in the new generation
-          newGen[bufferIdx] = this.DetermineCellState(oldGen[bufferIdx], nNeighbors);
-        }
+  // For each polar coordinate p we only evaluate p-1, p and p+1
+  for (let deltaX = x - 1; isInBoundaries(deltaX, x); deltaX++) {
+    for (let deltaY = y - 1; isInBoundaries(deltaY, y); deltaY++) {
+      for (let deltaZ = z - 1; isInBoundaries(deltaZ, z); deltaZ++) {
+        // Creates the coords object for the current neighbor/candidate
+        const nCoords: Coords = [deltaX, deltaY, deltaZ];
+        // And fetches its current life state from the 'old' generation
+        const neighborState = oldGen[linearizeCoords(nCoords)];
+        // If the cell is dead there's no point in keep going on
+        if (neighborState === 0) continue;
+        // If the cell is alive and the neighbot is valid for the current mode,
+        // then the counter is incremented accordingly
+        else if (validator[settings.mode](coords, nCoords)) neighborCount++;
       }
     }
   }
 
-  public CurrentGeneration(): Uint8Array {
-    // Based on the render_matrix_idx determines which one is the current matrix
-    return this.render_matrix_idx === false ? this.matrix_A : this.matrix_B;
+  return neighborCount;
+};
+
+const getNewCellState = (prevState: number, nAliveNeighbors: number) => {
+  // If the cell is dead but the spawn threshold has been reached then the cell is born
+  if (prevState === 0 && nAliveNeighbors >= settings.spawnThreshold)
+    return settings.maxLifeExpectancy;
+
+  // If the cell is alive and the survive threshold has been reached then the cell is aged
+  if (prevState !== 0 && nAliveNeighbors >= settings.surviveThreshold) return --prevState;
+
+  return 0; // Else the cell stays dead
+};
+
+export const init = (sttngs: Settings) => {
+  // Makes a local copy of the settings object (used during simulation)
+  settings = sttngs;
+  // Creates a new simulation state, with some default/initial values
+  state = { isActive: true, matrixIdx: false };
+
+  // Allocates two new matrixes with the desired dimensions
+  matrixA = getRandomSeed();
+  matrixB = new Uint8Array(settings.dimension ** 3);
+
+  return matrixA; // At last returns the initial generation to the caller
+};
+
+export const nextGeneration = () => {
+  // Based on the state.matrixIdx determines which one is the old and new generation
+  const oldGen = state.matrixIdx === false ? matrixA : matrixB;
+  const newGen = state.matrixIdx === false ? matrixB : matrixA;
+
+  if (!state.isActive) return oldGen; // If the execution has been paused, ignores the call
+
+  // Iterates over the full three dimensional matrix
+  for (let x = 0; x < settings.dimension; x++) {
+    for (let y = 0; y < settings.dimension; y++) {
+      for (let z = 0; z < settings.dimension; z++) {
+        // Count the alive neighboring cells for the given one
+        const nAliveNeighbors = countAliveNeighbors([x, y, z]);
+        // From the current cell coordinates determines its index in the buffer
+        const index = linearizeCoords([x, y, z]);
+        // Updates the cell age in the new generation
+        newGen[index] = getNewCellState(oldGen[index], nAliveNeighbors);
+      }
+    }
   }
 
-  public NewGeneration(): void {
-    // Based on the render_matrix_idx determines which one is the old and new matrix
-    const oldGen = this.render_matrix_idx === false ? this.matrix_A : this.matrix_B;
-    const newGen = this.render_matrix_idx === false ? this.matrix_B : this.matrix_A;
+  state.matrixIdx = !state.matrixIdx; // Flips the state.matrixIdx to the opposite value
+  return newGen; // At last returns the initial generation to the caller
+};
 
-    // Overwrites the new one with the next generation (derived from the old one)
-    this.DeriveFromGeneration(oldGen, newGen);
-    // Flips the render_matrix_idx to the opposite value
-    this.render_matrix_idx = !this.render_matrix_idx;
-  }
-}
+export const controls = {
+  play: () => (state.isActive = true),
+  pause: () => (state.isActive = false),
+  restart: () => ((state.matrixIdx = false), (matrixA = seed)),
+};

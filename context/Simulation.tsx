@@ -7,7 +7,7 @@ import {
   useRef,
   useState,
 } from 'react';
-import { Simulator } from '../core';
+import { init, nextGeneration } from '../core';
 import { DefaultSettings } from '../schema/constant';
 import { Settings } from '../schema/types';
 
@@ -31,8 +31,8 @@ type SimulationCtx = {
 /**
  * Custom hook to easily retrieve the context data/values from a consumer
  * component. If not used inside a provider it will throw an exception.
- * NOTE: It can't be used inside three.js' canvas component since
- * the context will not be propagated inside <canvas> tags.
+ * ! NOTE: It can't be used inside three.js' canvas component since
+ * ! React context will not be propagated inside <canvas> tags.
  * @returns {SimulationCtx}
  */
 export const useSimulation = () => {
@@ -52,19 +52,15 @@ export const SimulationProvider = ({ children }: { children: ReactNode }) => {
 
   // Whenever the settings changes the simulator is reset and restarted
   useEffect(() => {
-    // Creates a new simulator with the current provided settings
-    const simulator = new Simulator(settings);
-    // Sets the current age_matrix reference to the current generation
-    ageMatrix.current = simulator.CurrentGeneration();
+    // Creates a new simulator with the current provided settings and
+    // sets the initial age_matrix reference to the current generation
+    ageMatrix.current = init(settings);
 
     // ! Debug only, remove later...
     console.log('BP__ useSimulation', settings, ageMatrix);
 
     // Every one second a new generation is created and set as the current one
-    const intervalId = setInterval(() => {
-      simulator.NewGeneration();
-      ageMatrix.current = simulator.CurrentGeneration();
-    }, 100);
+    const intervalId = setInterval(() => (ageMatrix.current = nextGeneration()), 100);
 
     // Cleanup functions, removes the inteval
     return () => clearInterval(intervalId);
