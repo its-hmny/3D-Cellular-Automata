@@ -51,12 +51,6 @@ export const SimulationProvider = ({ children }: { children: ReactNode }) => {
   // Data state to save chain id and wallet address, this can be changed also from Metamask
   const [settings, setSettings] = useState<Settings>(DefaultSettings);
 
-  // Setter function to mutate/update/patch the simulation settings.
-  const mutate = useCallback(
-    (patch: Partial<Settings>) => setSettings(prev => ({ ...prev, ...patch })),
-    []
-  );
-
   // Whenever the settings changes the simulator is reset and restarted
   useEffect(() => {
     // Creates a new simulator with the current provided settings

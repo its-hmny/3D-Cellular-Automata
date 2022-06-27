@@ -60,7 +60,6 @@ const Form = ({ onDiscard, onSave }: Props) => {
             <Radio
               size="sm"
               value="conway"
-              checked={settings.mode === 'conway'}
               description="Evaluates only the 6 face adjacent neighbors"
             >
               Conway
@@ -68,7 +67,6 @@ const Form = ({ onDiscard, onSave }: Props) => {
             <Radio
               size="sm"
               value="von-neumann"
-              checked={settings.mode === 'von-neumann'}
               description="Evaluates the whole 26 neighbors"
             >
               Von Neumann
