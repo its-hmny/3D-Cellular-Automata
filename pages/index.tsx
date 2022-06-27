@@ -1,8 +1,8 @@
-import { Button } from '@nextui-org/react';
+import { Button, theme } from '@nextui-org/react';
 import { SettingsOption } from 'grommet-icons';
 import type { NextPage } from 'next';
 import Head from 'next/head';
-import { useState } from 'react';
+import { useCallback, useState } from 'react';
 import Automata from '../components/Automata';
 import Drawer from '../components/Drawer';
 import Form from '../components/Form';
@@ -20,9 +20,12 @@ const Home: NextPage = () => {
   const [isOpen, setOpen] = useState(false);
 
   // Aggreagate function that mutates the context and closes the modal onSave
-  const onSaveSettings = (newSettings: Settings) => {
+  const onSaveSettings = useCallback(
+    (newSettings: Settings) => {
     mutate(newSettings), setOpen(prev => !prev);
-  };
+    },
+    [mutate]
+  );
 
   return (
     <>
@@ -51,7 +54,7 @@ const Home: NextPage = () => {
         rounded
         color="warning"
         css={Style.Fab}
-        icon={<SettingsOption />}
+        icon={<SettingsOption color={theme.colors.warning.value} />}
         onClick={() => setOpen(prev => !prev)}
       >
         Settings

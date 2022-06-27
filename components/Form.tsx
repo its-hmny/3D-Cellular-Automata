@@ -1,4 +1,4 @@
-import { Button, Grid, Input, Radio } from '@nextui-org/react';
+import { Button, Grid, Input, Radio, theme } from '@nextui-org/react';
 import { Checkmark, Close } from 'grommet-icons';
 import { useMemo, useState } from 'react';
 import { useSimulation } from '../context/Simulation';
@@ -142,7 +142,12 @@ const Form = ({ onDiscard, onSave }: Props) => {
       {/* Finalizing actions (save or discard) */}
       <Grid.Container gap={2} css={Style.Footer}>
         <Grid xs={6}>
-          <Button flat color="error" icon={<Close />} onClick={onDiscard}>
+          <Button
+            flat
+            color="error"
+            icon={<Close color={theme.colors.error.value} />}
+            onClick={onDiscard}
+          >
             Discard
           </Button>
         </Grid>
@@ -150,7 +155,7 @@ const Form = ({ onDiscard, onSave }: Props) => {
           <Button
             flat
             color="success"
-            icon={<Checkmark />}
+            icon={<Checkmark color={theme.colors.success.value} />}
             onClick={() => onSave(newSettings)}
           >
             Save
