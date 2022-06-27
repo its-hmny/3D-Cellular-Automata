@@ -2,13 +2,12 @@ import {
   createContext,
   MutableRefObject,
   ReactNode,
-  useCallback,
   useContext,
   useEffect,
   useRef,
   useState,
 } from 'react';
-import { Simulator } from '../core/assembly';
+import { Simulator } from '../core';
 import { DefaultSettings } from '../schema/constant';
 import { Settings } from '../schema/types';
 

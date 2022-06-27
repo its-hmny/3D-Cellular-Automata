@@ -1,16 +1,5 @@
-type Coords = [number, number, number];
-class Settings {
-  // The first considers only the six adjacent neighbor
-  mode: string; // 'conway' | 'von-neumann';
-  // The desired dimension of each side in the 3D space
-  dimension: number;
-  // The number of required neighbor in order to spawn a new cell
-  spawnThreshold: number;
-  // The number of required neighbor in order for a cell to survive
-  surviveThreshold: number;
-  // The max life expectancy of every cell of the Automata
-  maxLifeExpectancy: number;
-}
+import { Coords, Settings } from '../schema/types';
+
 export class Simulator {
   // Private local copy of the simulator settings
   private settings: Settings;
