@@ -14,9 +14,9 @@ export type Settings = {
   mode: 'conway' | 'von-neumann';
   // The desired dimension of each side in the 3D space
   dimension: number;
-  // The number of required neighbor in order to spawn a new cell
+  // The number of required alive neighbor in order to spawn a new cell
   spawnThreshold: number;
-  // The number of required neighbor in order for a cell to survive
+  // The number of required alive neighbor in order for a cell to survive
   surviveThreshold: number;
   // The max life expectancy of every cell of the Automata
   maxLifeExpectancy: number;

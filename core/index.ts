@@ -15,7 +15,7 @@ const linearizeCoords = (coords: Coords) => {
   return x + settings.dimension * y + settings.dimension * settings.dimension * z;
 };
 
-const validator = {
+const IsNeighbor = {
   ['conway']: (cell: Coords, neighbor: Coords) => {
     // Destructures the single components of the cells coordinates
     const [xa, ya, za] = cell;
@@ -70,7 +70,7 @@ const countAliveNeighbors = (coords: Coords) => {
         if (neighborState === 0) continue;
         // If the cell is alive and the neighbot is valid for the current mode,
         // then the counter is incremented accordingly
-        else if (validator[settings.mode](coords, nCoords)) neighborCount++;
+        else if (IsNeighbor[settings.mode](coords, nCoords)) neighborCount++;
       }
     }
   }

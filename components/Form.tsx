@@ -1,6 +1,7 @@
 import { Button, Grid, Input, Radio, theme } from '@nextui-org/react';
 import { Checkmark, Close } from 'grommet-icons';
 import { useMemo, useState } from 'react';
+
 import { useSimulation } from '../context/Simulation';
 import {
   MaxConwayNeighbors,
@@ -9,20 +10,18 @@ import {
 } from '../schema/constant';
 import { Settings } from '../schema/types';
 
-const Style = {
-  // Standard space between each section in the form (Seed, Simulation mode, other params)
-  Section: { mb: '$10' },
-  // The footer uses all the remaining space but align the content at the bottom of it
-  Footer: { fg: '1', ai: 'flex-end' },
-};
-
 type Props = { onDiscard: () => void; onSave: (settings: Settings) => void };
+
+const Style = {
+  Section: { mb: '$10' }, // Standard space between each "section" in the form
+  Footer: { fg: '1', ai: 'flex-end' }, // The footer has flex-grow:1 but align the content at flex-end
+};
 
 const Form = ({ onDiscard, onSave }: Props) => {
   // Retrieves the current simulation settings from context
   const { settings } = useSimulation();
 
-  // Internal state that represents the current/changed settings
+  // Internal state that stores the current/changed settings
   const [newSettings, setNewSettings] = useState(settings);
 
   // Updates the max number of neighbors available based on the simulation mode
@@ -32,10 +31,11 @@ const Form = ({ onDiscard, onSave }: Props) => {
   );
 
   // TODO Add validation and automatic updates with tools like react-hook-form and yup
+  // TODO add seed handling (import, export, generation)
 
   return (
     <>
-      {/* Initial seed managment */}
+      {/* Initial seed management */}
       <Grid.Container gap={2} css={Style.Section}>
         <Grid xs={6} justify="center">
           <Button color="warning" flat auto>
@@ -55,7 +55,7 @@ const Form = ({ onDiscard, onSave }: Props) => {
           <Radio.Group
             label="Simulation mode"
             defaultValue={settings.mode}
-            onChange={(value: string) => setNewSettings({ ...newSettings, mode: value })}
+            onChange={value => setNewSettings({ ...newSettings, mode: value })}
           >
             <Radio
               size="sm"

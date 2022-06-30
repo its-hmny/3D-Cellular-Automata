@@ -3,7 +3,8 @@ import { SettingsOption } from 'grommet-icons';
 import type { NextPage } from 'next';
 import Head from 'next/head';
 import { useCallback, useState } from 'react';
-import Automata from '../components/Automata';
+
+import Automaton from '../components/Automaton';
 import Drawer from '../components/Drawer';
 import Form from '../components/Form';
 import { useSimulation } from '../context/Simulation';
@@ -15,21 +16,23 @@ const Style = {
 };
 
 const Home: NextPage = () => {
+  // Retrieves the mutator function for the SimulationContext
   const { mutate } = useSimulation();
+
   // Internal state to open/close the Drawer
   const [isOpen, setOpen] = useState(false);
 
-  // Aggreagate function that mutates the context and closes the modal onSave
+  // Aggregate function that mutates the context and closes the modal onSave
   const onSaveSettings = useCallback(
-    (newSettings: Settings) => {
-    mutate(newSettings), setOpen(prev => !prev);
-    },
+    (newSettings: Settings) => (mutate(newSettings), setOpen(prev => !prev)),
     [mutate]
   );
 
+  // TODO move <Head> tag content to SEO component
+
   return (
     <>
-      {/* Metatag, Title and SEO optimizations */}
+      {/* Metadata, Title and SEO optimizations */}
       <Head>
         {/* Browser's tab appearance */}
         <title>3D Cellular Automata</title>
@@ -47,7 +50,7 @@ const Home: NextPage = () => {
         <meta httpEquiv="Content-Type" content="text/html; charset=utf-8" />
       </Head>
 
-      {/* Fab button */}
+      {/* Fab settings button */}
       <Button
         auto
         flat
@@ -65,8 +68,8 @@ const Home: NextPage = () => {
         <Form onDiscard={() => setOpen(prev => !prev)} onSave={onSaveSettings} />
       </Drawer>
 
-      {/* Three.js canvas with full automata rendering */}
-      <Automata />
+      {/* Three.js canvas with full automaton rendering */}
+      <Automaton />
     </>
   );
 };

@@ -2,6 +2,8 @@ import { Card, Grid, Text } from '@nextui-org/react';
 import { Close } from 'grommet-icons';
 import { ReactNode } from 'react';
 
+type Props = { isOpen: boolean; onClose: () => void; children: ReactNode };
+
 const Style = {
   // Drawer's general styling
   Drawer: {
@@ -18,8 +20,6 @@ const Style = {
   // Drawer's subtitle styling
   Subtitle: { color: '$accents8' },
 };
-
-type Props = { isOpen: boolean; onClose: () => void; children: ReactNode };
 
 const Drawer = ({ isOpen, onClose, children }: Props) => {
   // Drawer closed, nothing to show
