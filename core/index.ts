@@ -28,8 +28,9 @@ const validator = {
     // Destructures the single components of the cells coordinates
     const [xa, ya, za] = cell;
     const [xb, yb, zb] = neighbor;
+    const delta = Math.abs(xa - xb) + Math.abs(ya - yb) + Math.abs(za - zb);
     // Also this would be possible => return xa !== xb && ya !== yb && za !== zb;
-    return Math.abs(xa - xb) + Math.abs(ya - yb) + Math.abs(za - zb) <= 2;
+    return delta >= 1 && delta <= 2;
   },
 };
 
@@ -103,6 +104,9 @@ export const nextGeneration = () => {
   // Based on the state.matrixIdx determines which one is the old and new generation
   const oldGen = matrixIdx === false ? matrixA : matrixB;
   const newGen = matrixIdx === false ? matrixB : matrixA;
+
+  // If every cell in the automaton is dead simply return empty generation
+  if (oldGen.every(cellState => cellState === 0)) return oldGen;
 
   // Iterates over the full three dimensional matrix
   for (let x = 0; x < settings.dimension; x++) {
