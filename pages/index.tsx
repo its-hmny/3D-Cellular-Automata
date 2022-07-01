@@ -1,8 +1,8 @@
-import { Button, theme } from '@nextui-org/react';
-import { SettingsOption } from 'grommet-icons';
+import { Button, Grid, theme } from '@nextui-org/react';
+import { Pause, Play, SettingsOption } from 'grommet-icons';
 import type { NextPage } from 'next';
 import Head from 'next/head';
-import { useCallback, useState } from 'react';
+import { useCallback, useMemo, useState } from 'react';
 
 import Automaton from '../components/Automaton';
 import Drawer from '../components/Drawer';
@@ -12,15 +12,23 @@ import { Settings } from '../schema/types';
 
 const Style = {
   // Fab button styling
-  Fab: { position: 'fixed', top: '2em', left: '2em', zIndex: 1 },
+  Fab: { width: '15vw', position: 'fixed', top: '2em', left: '2em', zIndex: 1 },
 };
 
 const Home: NextPage = () => {
   // Retrieves the mutator function for the SimulationContext
-  const { mutate } = useSimulation();
+  const { mutate, isActive, start: play, stop: pause } = useSimulation();
 
   // Internal state to open/close the Drawer
   const [isOpen, setOpen] = useState(false);
+
+  const [icon, onClick] = useMemo(() => {
+    const iconProps = { color: theme.colors.warning.value };
+    // eslint-disable-next-line react/jsx-key
+    if (isActive) return [<Pause {...iconProps} />, pause];
+    // eslint-disable-next-line react/jsx-key
+    else return [<Play {...iconProps} />, play];
+  }, [isActive, pause, play]);
 
   // Aggregate function that mutates the context and closes the modal onSave
   const onSaveSettings = useCallback(
@@ -51,17 +59,19 @@ const Home: NextPage = () => {
       </Head>
 
       {/* Fab settings button */}
-      <Button
-        auto
-        flat
-        rounded
-        color="warning"
-        css={Style.Fab}
-        icon={<SettingsOption color={theme.colors.warning.value} />}
-        onClick={() => setOpen(prev => !prev)}
-      >
-        Settings
-      </Button>
+      <Grid.Container justify="space-around" css={Style.Fab}>
+        <Button
+          auto
+          flat
+          rounded
+          color="warning"
+          icon={<SettingsOption color={theme.colors.warning.value} />}
+          onClick={() => setOpen(prev => !prev)}
+        >
+          Settings
+        </Button>
+        <Button auto flat rounded color="warning" icon={icon} onClick={onClick} />
+      </Grid.Container>
 
       {/* Drawer with settings form */}
       <Drawer isOpen={isOpen} onClose={() => setOpen(prev => !prev)}>
