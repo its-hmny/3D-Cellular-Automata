@@ -90,8 +90,8 @@ const getNewCellState = (prevState: number, nAliveNeighbors: number) => {
 };
 
 export const init = (sttngs: Settings) => {
-  // Makes a local copy of the settings object (used during simulation)
-  settings = sttngs;
+  settings = sttngs; // Makes a local copy of the settings object (used during simulation)
+  matrixIdx = false; // Resets the matrixIdx to the initial/default values
 
   // Allocates two new matrixes with the desired dimensions
   matrixA = getRandomSeed();
