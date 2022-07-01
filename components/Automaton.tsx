@@ -3,6 +3,7 @@ import { Canvas } from '@react-three/fiber';
 import { ReactNode, useMemo } from 'react';
 
 import { useSimulation } from '../context/Simulation';
+import { Coords } from '../schema/types';
 import Cell from './Cell';
 
 const Automaton = () => {
@@ -16,19 +17,20 @@ const Automaton = () => {
   // Memoized version of the automaton's cells, each cell will update independently
   const toRender = useMemo(() => {
     const cells: Array<ReactNode> = []; // Vector with aggregate list of cell to be rendered
-
-    // TODO works correctly only with even dimension number (check/implement for odds)
-    // Min and max offset from cube/matrix center => Coords: [dim/2, dim/2, dim/2]
-    const maxIndex = settings.dimension / 2;
-    const minIndex = settings.dimension / -2;
+    // Computes the offset to apply in order to obtains cartesian coords from the center
+    const offset = Math.round(settings.dimension / 2);
 
     // Allocates all the needed automaton Cells
-    for (let x = minIndex; x < maxIndex; x++)
-      for (let y = minIndex; y < maxIndex; y++)
-        for (let z = minIndex; z < maxIndex; z++)
-          cells.push(
-            <Cell key={`${x}${y}${z}`} position={[x, y, z]} ageMatrix={ageMatrix} />
-          );
+    for (let x = 0; x < settings.dimension; x++)
+      for (let y = 0; y < settings.dimension; y++)
+        for (let z = 0; z < settings.dimension; z++) {
+          // Initializes the cartesian plan coords
+          const coords: Coords = [x - offset, y - offset, z - offset];
+          // Creates linearized index to access the ageMatrix that act both as key
+          const id = x + settings.dimension * y + settings.dimension ** 2 * z;
+          // Adds the cell to the render list
+          cells.push(<Cell key={id} {...{ ageMatrix, coords, id }} />);
+        }
 
     return cells;
   }, [ageMatrix, settings.dimension]);
