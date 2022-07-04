@@ -13,8 +13,10 @@ import { Settings } from '../schema/types';
 type Props = { onDiscard: () => void; onSave: (settings: Settings) => void };
 
 const Style = {
-  Section: { mb: '$10' }, // Standard space between each "section" in the form
-  Footer: { fg: '1', ai: 'flex-end' }, // The footer has flex-grow:1 but align the content at flex-end
+  // Standard space between each "section" in the form
+  Section: { mb: '$10' },
+  // The footer has flex-grow:1 but align the content at flex-end
+  Footer: { fg: '1', ai: 'flex-end' },
 };
 
 const Form = ({ onDiscard, onSave }: Props) => {
@@ -55,6 +57,7 @@ const Form = ({ onDiscard, onSave }: Props) => {
           <Radio.Group
             label="Simulation mode"
             defaultValue={settings.mode}
+            // @ts-ignore
             onChange={value => setNewSettings({ ...newSettings, mode: value })}
           >
             <Radio
