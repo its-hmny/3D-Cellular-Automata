@@ -5,13 +5,19 @@
 export type Coords = [number, number, number];
 
 /**
+ * The available simulation modes
+ * @type @alias Mode
+ */
+export type Mode = 'conway' | 'von-neumann';
+
+/**
  * Data, rules and configuration params for the Cellular
  * Automata simulation algorithm
  * @type @alias Settings
  */
 export type Settings = {
   // The first considers only the six adjacent neighbor
-  mode: 'conway' | 'von-neumann';
+  mode: Mode;
   // The desired dimension of each side in the 3D space
   dimension: number;
   // The number of required alive neighbor in order to spawn a new cell
