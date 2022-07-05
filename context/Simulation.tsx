@@ -10,6 +10,7 @@ import {
   useState,
 } from 'react';
 
+import { CreateRandomSeed } from '../automata/helpers';
 import { Simulator } from '../automata/simulator';
 import { InitSeed, InitSettings } from '../schema/constant';
 import { Settings } from '../schema/types';
@@ -58,6 +59,12 @@ export const SimulationProvider = ({ children }: { children: ReactNode }) => {
   const [seed, setSeed] = useState<Uint8Array>(InitSeed);
   // Shared state that stores the Simulator's rules
   const [settings, setSettings] = useState<Settings>(InitSettings);
+
+  // If the dimension or the max life expectancy have been changed it is
+  // necessary then to recreate a new random seed
+  useEffect(() => {
+    setSeed(CreateRandomSeed(settings.dimension, settings.maxLifeExpectancy));
+  }, [seed.length, settings.dimension, settings.maxLifeExpectancy]);
 
   // Whenever the settings or the seed changes the Simulator is recreated
   useEffect(() => {
