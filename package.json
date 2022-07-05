@@ -4,7 +4,7 @@
   "private": true,
   "description": "A Three.js webapp to simulate cellular automata in 3D",
   "author": "Enea Guidi <guidi.enea@gmail.com> (https://its-hmny.github.io)",
-  "homepage": "TODO",
+  "homepage": "https://its-hmny.github.io/3D-Cellular-Automata",
   "license": "GPL-3.0",
   "repository": {
     "type": "git",
