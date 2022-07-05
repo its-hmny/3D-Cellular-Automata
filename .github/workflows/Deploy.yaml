@@ -25,17 +25,8 @@ jobs:
         # -> Production build + static file export using Next.js
         run: yarn build:html
 
-      - name: Prepares for commit
-        # -> Enables pattern expansion in bash
-        # -> Removes souce code and node_modules.
-        # -> Moves the static files out in the project root
-        # -> Removes the now empty 'out' folder
-        run: shopt -s extglob && rm -rf !(out) && mv out/* . && rmdir out
-
       - name: Commit to 'gh-pages' branch
-        uses: github-actions-x/commit@v2.9
+        uses: peaceiris/actions-gh-pages@v3
         with:
-          github-token: ${{ secrets.GITHUB_TOKEN }}
-          push-branch: 'gh-pages'
-          commit-message: 'ci(html): GitHub Actions deploy'
-          files: .
+          publish_dir: ./out
+          github_token: ${{ secrets.GITHUB_TOKEN }}
