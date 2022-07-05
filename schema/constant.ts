@@ -1,16 +1,26 @@
+import { CreateRandomSeed } from '../automata/helpers';
 import { Settings } from './types';
 
 /**
  * Default setting used on first load of the webpage
  * @constant @type {Settings}
  */
-export const DefaultSettings: Settings = {
+export const InitSettings: Settings = {
   mode: 'conway',
   dimension: 15,
   spawnThreshold: 4,
   surviveThreshold: 2,
   maxLifeExpectancy: 15,
 };
+
+/**
+ * Default setting used on first load of the webpage
+ * @constant @type {Uint8Array}
+ */
+export const InitSeed = CreateRandomSeed(
+  InitSettings.dimension,
+  InitSettings.maxLifeExpectancy
+);
 
 /**
  * Constant/upperbound to the length of one dimension in the automaton/matrix.

@@ -2,15 +2,14 @@ import {
   createContext,
   MutableRefObject,
   ReactNode,
-  useCallback,
   useContext,
   useEffect,
   useRef,
   useState,
 } from 'react';
 
-import * as simulator from '../core';
-import { DefaultSettings } from '../schema/constant';
+import { Simulator } from '../automata/simualtor';
+import { InitSeed, InitSettings } from '../schema/constant';
 import { Settings } from '../schema/types';
 
 // Creates a new Simulation Context
@@ -24,14 +23,12 @@ const SimulationContext = createContext<SimulationCtx | null>(null);
 type SimulationCtx = {
   // The simulator's setting (with rules and thresholds)
   settings: Settings;
-  // The cell's age counter (0 is dead, x > 0 is alive)
-  ageMatrix: MutableRefObject<Uint8Array | undefined>;
-  // Setter function to mutate the settings state and reset the simulation
-  mutate: (newSettings: Settings) => void;
-  // Utilities to start/stop and determine the state of the current simulation
-  stop: () => void;
-  start: () => void;
-  isActive: boolean;
+  // A shared reference to the simulator class
+  simulator: MutableRefObject<Simulator>;
+  // Setter function to mutate the initial seed of a simulation
+  setSeed: (newSeed: Uint8Array) => void;
+  // Setter function to mutate the simulation settings
+  setSettings: (newSettings: Settings) => void;
 };
 
 /**
@@ -51,48 +48,22 @@ export const useSimulation = () => {
 };
 
 export const SimulationProvider = ({ children }: { children: ReactNode }) => {
-  // Mutable, shared and readonly reference to the cells age buffer (a linearized matrix)
-  const ageMatrix = useRef<Uint8Array>();
+  // Mutable, shared and readonly reference to the simulator.
+  // Having this reference allows to generate a new generation on-demand and get the current one
+  const simulator = useRef<Simulator>(new Simulator(InitSettings, InitSeed));
 
-  // Shared state that stores the simulation configurations/settings
-  const [settings, setSettings] = useState<Settings>(DefaultSettings);
-  // Internal state to keep track of the current simulation id to start/stop the latter
-  const [simulationId, setSimulationId] = useState<any>();
+  // Internal state that stores the initial seed of the Simulator
+  const [seed, setSeed] = useState<Uint8Array>(InitSeed);
+  // Shared state that stores the Simulator's rules
+  const [settings, setSettings] = useState<Settings>(InitSettings);
 
-  // Starts the simulation of with the given settings/simulator
-  const start = useCallback(() => {
-    // Every 100 milliseconds a new generation is created and set as the current one.
-    const intervalId = setInterval(() => {
-      ageMatrix.current = simulator.nextGeneration();
-    }, 100);
-
-    // The interval's id is used more broadly as simulationId
-    setSimulationId(intervalId);
-  }, []);
-
-  // Stops the current simulation, it can be resumed later eventually
-  const stop = useCallback(() => {
-    clearInterval(simulationId), setSimulationId(undefined);
-  }, [simulationId]);
-
-  // Whenever the settings changes the simulator is reset and restarted
+  // Whenever the settings or the seed changes the Simulator is recreated
   useEffect(() => {
-    // Creates a new simulator with the current provided settings and
-    // sets the initial age_matrix reference to the current generation
-    ageMatrix.current = simulator.init(settings);
-  }, [settings]);
+    simulator.current = new Simulator(settings, seed);
+  }, [seed, settings]);
 
   return (
-    <SimulationContext.Provider
-      value={{
-        ageMatrix,
-        isActive: !!simulationId,
-        mutate: setSettings,
-        settings,
-        start,
-        stop,
-      }}
-    >
+    <SimulationContext.Provider value={{ settings, simulator, setSettings, setSeed }}>
       {children}
     </SimulationContext.Provider>
   );
