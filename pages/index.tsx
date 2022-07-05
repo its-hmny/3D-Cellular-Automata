@@ -1,9 +1,10 @@
 import { Button, Grid, theme } from '@nextui-org/react';
-import { Pause, Play, SettingsOption } from 'grommet-icons';
+import { SettingsOption } from 'grommet-icons';
 import type { NextPage } from 'next';
-import { useCallback, useMemo, useState } from 'react';
+import { useCallback, useState } from 'react';
 
 import Automaton from '../components/Automaton';
+import Controls from '../components/Controls';
 import Drawer from '../components/Drawer';
 import Form from '../components/Form';
 import SEO from '../components/SEO';
@@ -17,23 +18,18 @@ const Style = {
 
 const Home: NextPage = () => {
   // Retrieves the mutator function for the SimulationContext
-  const { mutate, isActive, start, stop } = useSimulation();
+  const { setSettings } = useSimulation();
 
   // Internal state to open/close the Drawer
   const [isOpen, setOpen] = useState(false);
 
-  const [icon, onClick] = useMemo(() => {
-    const iconProps = { color: theme.colors.warning.value };
-    // eslint-disable-next-line react/jsx-key
-    if (isActive) return [<Pause {...iconProps} />, stop];
-    // eslint-disable-next-line react/jsx-key
-    else return [<Play {...iconProps} />, start];
-  }, [isActive, start, stop]);
-
   // Aggregate function that mutates the context and closes the modal onSave
   const onSaveSettings = useCallback(
-    (newSettings: Settings) => (mutate(newSettings), setOpen(prev => !prev)),
-    [mutate]
+    (patch: Settings) => {
+      setSettings(patch); // Updates the context state (that, in turns, updates the Simulator)
+      setOpen(prev => !prev); // Closes the modal upon completion
+    },
+    [setSettings]
   );
 
   return (
@@ -53,7 +49,7 @@ const Home: NextPage = () => {
         >
           Settings
         </Button>
-        <Button auto flat rounded color="warning" icon={icon} onClick={onClick} />
+        <Controls />
       </Grid.Container>
 
       {/* Drawer with settings form */}

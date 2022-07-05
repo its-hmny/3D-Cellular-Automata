@@ -2,13 +2,14 @@ import { OrbitControls } from '@react-three/drei';
 import { Canvas } from '@react-three/fiber';
 import { ReactNode, useMemo } from 'react';
 
+import { Coords2Index } from '../automata/helpers';
 import { useSimulation } from '../context/Simulation';
 import { Coords } from '../schema/types';
 import Cell from './Cell';
 
 const Automaton = () => {
   // Retrieves the needed data from the SimulationContext
-  const { settings, ageMatrix } = useSimulation();
+  const { settings, simulator } = useSimulation();
 
   // TODO this doesn't work, try a version with useFrame and canvasRef
   // Memoized version of the camera position bases on the number of cells in the matrix
@@ -27,13 +28,13 @@ const Automaton = () => {
           // Initializes the cartesian plan coords
           const coords: Coords = [x - offset, y - offset, z - offset];
           // Creates linearized index to access the ageMatrix that act both as key
-          const id = x + settings.dimension * y + settings.dimension ** 2 * z;
+          const id = Coords2Index(coords, settings.dimension);
           // Adds the cell to the render list
-          cells.push(<Cell key={id} {...{ ageMatrix, coords, id }} />);
+          cells.push(<Cell key={id} {...{ simulator, coords, id }} />);
         }
 
     return cells;
-  }, [ageMatrix, settings.dimension]);
+  }, [simulator, settings.dimension]);
 
   return (
     <Canvas
