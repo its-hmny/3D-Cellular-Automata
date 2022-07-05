@@ -13,7 +13,7 @@ import { Settings } from '../schema/types';
 
 const Style = {
   // Fab button styling
-  Fab: { width: '200px', position: 'fixed', top: '2em', left: '2em', zIndex: 1 },
+  Fab: { width: '300px', position: 'fixed', top: '2em', left: '2em', zIndex: 1 },
 };
 
 const Home: NextPage = () => {
@@ -37,8 +37,9 @@ const Home: NextPage = () => {
       {/* Metadata, Title and SEO optimizations */}
       <SEO />
 
-      {/* Fab settings button */}
+      {/* Fab container */}
       <Grid.Container justify="space-around" css={Style.Fab}>
+        {/* Open settings drawer */}
         <Button
           auto
           flat
@@ -49,6 +50,8 @@ const Home: NextPage = () => {
         >
           Settings
         </Button>
+
+        {/* Simulation button controlS (play, pause, restart) */}
         <Controls />
       </Grid.Container>
 

@@ -1,7 +1,9 @@
 import {
   createContext,
+  Dispatch,
   MutableRefObject,
   ReactNode,
+  SetStateAction,
   useContext,
   useEffect,
   useRef,
@@ -26,9 +28,9 @@ type SimulationCtx = {
   // A shared reference to the simulator class
   simulator: MutableRefObject<Simulator>;
   // Setter function to mutate the initial seed of a simulation
-  setSeed: (newSeed: Uint8Array) => void;
+  setSeed: Dispatch<SetStateAction<Uint8Array>>;
   // Setter function to mutate the simulation settings
-  setSettings: (newSettings: Settings) => void;
+  setSettings: Dispatch<SetStateAction<Settings>>;
 };
 
 /**
