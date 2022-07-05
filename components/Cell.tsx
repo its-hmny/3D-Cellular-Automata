@@ -1,7 +1,7 @@
 import { useFrame } from '@react-three/fiber';
 import { MutableRefObject, useState } from 'react';
 
-import { Simulator } from '../automata/simualtor';
+import { Simulator } from '../automata/simulator';
 import { Coords } from '../schema/types';
 
 type Props = {

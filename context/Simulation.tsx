@@ -10,7 +10,7 @@ import {
   useState,
 } from 'react';
 
-import { Simulator } from '../automata/simualtor';
+import { Simulator } from '../automata/simulator';
 import { InitSeed, InitSettings } from '../schema/constant';
 import { Settings } from '../schema/types';
 
