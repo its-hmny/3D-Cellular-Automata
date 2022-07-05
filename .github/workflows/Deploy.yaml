@@ -1,0 +1,41 @@
+name: GitHub Pages Deploy
+
+on:
+  push:
+    branches: [main]
+
+jobs:
+  ci:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repo
+        uses: actions/checkout@v3
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: 17.3.0
+
+      - name: Install dependencies
+        # -> Yarn equivalent to 'npm ci'
+        run: yarn install --frozen-lockfile
+
+      - name: Static Site Generation (SSG)
+        # -> Production build + static file export using Next.js
+        run: yarn build:html
+
+      - name: Prepares for commit
+        # -> Enables pattern expansion in bash
+        # -> Removes souce code and node_modules.
+        # -> Moves the static files out in the project root
+        # -> Removes the now empty 'out' folder
+        run: shopt -s extglob && rm -rf !(out) && mv out/* . && rmdir out
+
+      - name: Commit to 'gh-pages' branch
+        uses: github-actions-x/commit@v2.9
+        with:
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          push-branch: 'gh-pages'
+          commit-message: 'ci(html): GitHub Actions deploy'
+          files: .
