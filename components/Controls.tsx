@@ -11,6 +11,13 @@ const Controls = () => {
   // Internal state to keep track of the current simulation id to start/stop the latter
   const [simulationId, setSimulationId] = useState<any>();
 
+  // Memoized version of the (shared) props for icons and buttons
+  const [ButtonProps, IconProps] = useMemo(() => {
+    const button = { auto: true, flat: true, rounded: true, color: 'warning' as const };
+    const icon = { color: theme.colors.warning.value };
+    return [button, icon];
+  }, []);
+
   // Starts the simulation of with the given settings/simulator
   const start = useCallback(() => {
     // Every 100 milliseconds a new generation is created and set as the current one.
@@ -42,13 +49,6 @@ const Controls = () => {
     // this signal to React an effective state changes but the state are equal to one another
     setSeed(prev => prev.slice());
   }, [setSeed, stop]);
-
-  // Memoized version of the (shared) props for icons and buttons
-  const [ButtonProps, IconProps] = useMemo(() => {
-    const button = { auto: true, flat: true, rounded: true, color: 'warning' as const };
-    const icon = { color: theme.colors.warning.value };
-    return [button, icon];
-  }, []);
 
   return (
     <>

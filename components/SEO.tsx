@@ -4,7 +4,6 @@ const SEO = () => (
   <Head>
     {/* Browser's tab appearance */}
     <title>3D Cellular Automata</title>
-    <link rel="icon" type="image/x-icon" href="/favicon.ico" />
 
     {/* General metadata (title, description, author) */}
     <meta name="language" content="English" />
