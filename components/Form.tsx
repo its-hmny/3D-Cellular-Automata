@@ -1,7 +1,8 @@
 import { Button, Grid, Input, Radio, theme } from '@nextui-org/react';
 import { Checkmark, Close } from 'grommet-icons';
-import { useMemo, useState } from 'react';
+import { useCallback, useMemo, useState } from 'react';
 
+import { CreateRandomSeed, ExportSeed, ImportSeed } from '../automata/helpers';
 import { useSimulation } from '../context/Simulation';
 import {
   MaxConwayNeighbors,
@@ -21,7 +22,7 @@ const Style = {
 
 const Form = ({ onDiscard, onSave }: Props) => {
   // Retrieves the current simulation settings from context
-  const { settings } = useSimulation();
+  const { settings, setSeed } = useSimulation();
 
   // Internal state that stores the current/changed settings
   const [newSettings, setNewSettings] = useState(settings);
@@ -32,21 +33,41 @@ const Form = ({ onDiscard, onSave }: Props) => {
     [newSettings.mode]
   );
 
+  // Generates and sets a new random seed
+  const SeedRandom = useCallback(
+    () => setSeed(CreateRandomSeed(settings.dimension, settings.maxLifeExpectancy)),
+    [setSeed, settings.dimension, settings.maxLifeExpectancy]
+  );
+
+  // Imports and generates a seed from a file provided by the user
+  const SeedImport = useCallback(() => ImportSeed(setSeed), [setSeed]);
+
+  // Exports the current seed to a JSON files
+  const SeedExport = useCallback(
+    // TODO This sucks, fix it
+    () => setSeed(current => (ExportSeed(current), current)),
+    [setSeed]
+  );
+
   // TODO Add validation and automatic updates with tools like react-hook-form and yup
-  // TODO add seed handling (import, export, generation)
 
   return (
     <>
       {/* Initial seed management */}
       <Grid.Container gap={2} css={Style.Section}>
-        <Grid xs={6} justify="center">
-          <Button color="warning" flat auto>
-            Generate random seed
+        <Grid xs={4} justify="center">
+          <Button color="warning" flat auto onClick={SeedRandom}>
+            Random seed
           </Button>
         </Grid>
-        <Grid xs={6} justify="center">
-          <Button color="warning" flat auto>
-            Import seed from file
+        <Grid xs={4} justify="center">
+          <Button color="warning" flat auto onClick={SeedImport}>
+            Import seed
+          </Button>
+        </Grid>
+        <Grid xs={4} justify="center">
+          <Button color="warning" flat auto onClick={SeedExport}>
+            Export seed
           </Button>
         </Grid>
       </Grid.Container>

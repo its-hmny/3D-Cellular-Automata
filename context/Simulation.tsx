@@ -64,7 +64,7 @@ export const SimulationProvider = ({ children }: { children: ReactNode }) => {
   // necessary then to recreate a new random seed
   useEffect(() => {
     setSeed(CreateRandomSeed(settings.dimension, settings.maxLifeExpectancy));
-  }, [seed.length, settings.dimension, settings.maxLifeExpectancy]);
+  }, [settings.dimension, settings.maxLifeExpectancy]);
 
   // Whenever the settings or the seed changes the Simulator is recreated
   useEffect(() => {

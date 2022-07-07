@@ -1,3 +1,4 @@
+import { ChangeEvent } from 'react';
 import { Coords, Mode, Settings } from '../schema/types';
 
 /**
@@ -30,6 +31,56 @@ export const CreateRandomSeed = (dim_length: number, max_value: number) => {
   }
 
   return seed; // Returns the generated seed generation
+};
+
+/**
+ * Opens a upload file dialog to the user and awaits for interaction.
+ * Once the file has been chosen reads its content and converts the data back
+ * to a UInt8Array (the seed format) and calls the completion callback
+ * @function
+ * @param {(Uint8Array) => void} onImportCompleted - Completion callback
+ */
+export const ImportSeed = (onImportCompleted: (newSeed: Uint8Array) => void) => {
+  // Inline function to converts the file content to a UInt8Array (the seed)
+  const TextToSeed = (e: ProgressEvent<FileReader>) => {
+    // Text to Buffer object
+    const buffer = Buffer.from(JSON.parse(e.target?.result as string));
+    // Buffer to UInt8Array that is then passed to the callback
+    onImportCompleted(new Uint8Array(buffer));
+  };
+
+  // Event listener to read a file uploaded by the user
+  const onFileUpload = (e: ChangeEvent<HTMLInputElement>) => {
+    const reader = new FileReader();
+    reader.addEventListener('load', TextToSeed);
+    reader.readAsText(e.target.files?.item(0) ?? new Blob());
+  };
+
+  // Creates a temporary input type file element 
+  const input = document.createElement('input');
+  input.type = 'file';
+  input.onchange = onFileUpload as any;
+  input.accept = 'application/json';
+
+  input.click(); // Opens the dialog on the client
+};
+
+/**
+ * Exports the given seed to JSON file and triggers the download
+ * @function
+ * @param {Uint8Array} seed - The seed to export
+ */
+export const ExportSeed = (seed: Uint8Array) => {
+  // Converts the seed to a binary blob
+  const jsonSeed = JSON.stringify(Buffer.from(seed));
+  const blob = new Blob([jsonSeed], { type: 'application/json' });
+
+  // Creates an anchor (<a>) element with the blob URL as href
+  const anchor = document.createElement('a');
+  anchor.href = window.URL.createObjectURL(blob);
+  anchor.download = 'Seed.json';
+
+  anchor.click(); // Triggers the download on the clients
 };
 
 /**
@@ -87,7 +138,7 @@ export const GetNeighbors = (coords: Coords, dim_length: number, mode: Mode) => 
 
 /**
  * Based on the previous state and the execution settings (the thresholds)
- * computes and returns the new cell state. 
+ * computes and returns the new cell state.
  * @function
  */
 export const NewCellState = (prev: number, nAlive: number, settings: Settings) => {
