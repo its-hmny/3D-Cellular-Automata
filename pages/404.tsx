@@ -23,8 +23,8 @@ const NotFound: NextPage = () => {
         {/* Page description */}
         <Grid xs={12} direction="column">
           <Text h5>
-            The page you're looking for doesn't seem to exist, please double check the URL
-            typed in your browser navbar.
+            The page you&apos;re looking for doesn&apos;t seem to exist, please double
+            check the URL typed in your browser navbar.
           </Text>
           <Text h5>
             If the problem persist please open a Issue card &nbsp;
