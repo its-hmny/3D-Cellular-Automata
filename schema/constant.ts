@@ -27,3 +27,17 @@ export const MaxValues = {
   Dimension: 20,
   Neighbors: { ['conway']: 6, ['von-neumann']: 26 },
 };
+
+/**
+ * The webapp metadata for SEO optimization and Social Link Preview
+ * @constant
+ */
+export const Metadata = {
+  TwitterHandle: '@its-hmny',
+  Title: '3D Cellular Automata',
+  Author: 'Enea Guidi (its-hmny)',
+  SiteUrl: 'http://its-hmny.github.io/3D-Cellular-Automata/',
+  Image: 'http://its-hmny.github.io/3D-Cellular-Automata/logo.png',
+  Description: 'A Three.js webapp to simulate cellular automata in 3D',
+  Keywords: ['cellular automata', '3D', 'conway', 'game of life', 'three.js', 'react'],
+};
