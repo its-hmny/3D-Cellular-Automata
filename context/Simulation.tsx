@@ -1,38 +1,12 @@
-import {
-  createContext,
-  Dispatch,
-  MutableRefObject,
-  ReactNode,
-  SetStateAction,
-  useContext,
-  useEffect,
-  useRef,
-  useState,
-} from 'react';
+import { createContext, ReactNode, useContext, useEffect, useRef, useState } from 'react';
 
 import { CreateRandomSeed } from '../automata/seed';
 import { Simulator } from '../automata/simulator';
 import { InitSeed, InitSettings } from '../schema/constant';
-import { Settings } from '../schema/types';
+import { Settings, SimulationCtx } from '../schema/types';
 
 // Creates a new Simulation Context
 const SimulationContext = createContext<SimulationCtx | null>(null);
-
-/**
- * The param and function provided by the context and accessible
- * by the all the consumer that will subscribe to it.
- * @type @alias SimulationCtx
- */
-type SimulationCtx = {
-  // The simulator's setting (with rules and thresholds)
-  settings: Settings;
-  // A shared reference to the simulator class
-  simulator: MutableRefObject<Simulator>;
-  // Setter function to mutate the initial seed of a simulation
-  setSeed: Dispatch<SetStateAction<Uint8Array>>;
-  // Setter function to mutate the simulation settings
-  setSettings: Dispatch<SetStateAction<Settings>>;
-};
 
 /**
  * Custom hook to easily retrieve the context data/values from a consumer component.

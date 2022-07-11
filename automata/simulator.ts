@@ -15,14 +15,12 @@ export class Simulator {
   private GetNeighbors: (coords: Coords) => Coords[];
 
   public constructor(settings: Settings, seed: Uint8Array) {
-    // Makes a copy of the simulation settings
-    const { dimension, mode } = settings;
     // Makes a copy of the seed as initial generation and creates an empty buffer/array
-    this.generations = [seed.slice(), new Uint8Array(dimension ** 3)];
+    this.generations = [seed.slice(), new Uint8Array(settings.dimension ** 3)];
 
-    // Function currying allows for cleaner code and avoids to specify always the same params
-    this.Coords2Index = (coords: Coords) => Coords2Index(coords, dimension);
-    this.GetNeighbors = (coords: Coords) => GetNeighbors(coords, dimension, mode);
+    // Closured functions allows for cleaner code and avoids to specify always the same params
+    this.Coords2Index = (coords: Coords) => Coords2Index(coords, settings.dimension);
+    this.GetNeighbors = (coords: Coords) => GetNeighbors(coords, settings);
     this.NewCellState = (cellAge: number, nAlive: number) =>
       NewCellState(cellAge, nAlive, settings);
   }

@@ -2,43 +2,28 @@ import { CreateRandomSeed } from '../automata/seed';
 
 /**
  * Default setting used on first load of the webpage
- * @constant @type {Settings}
+ * @constant
  */
-export const InitSettings: Settings = {
-  mode: 'conway',
-  dimension: 15,
-  spawnThreshold: 4,
-  surviveThreshold: 2,
-  maxLifeExpectancy: 15,
-};
+export const InitSettings = {
+  mode: 'conway', // Defaults to the classic Conway's rules
+  dimension: 15, // Starts with a total of 15 ** 3 cells
+  lim_spawn: 4, // Requires 4 out of 6 neighbors to spawn a new cell
+  lim_survive: 2, // Requires 2 out of 6 neighbors for a cell to survive
+  max_states: 15, // The max age (also max life expectancy of a cell)
+} as const;
 
 /**
  * Default setting used on first load of the webpage
- * @constant @type {Uint8Array}
+ * @constant
  */
-export const InitSeed = CreateRandomSeed(
-  InitSettings.dimension,
-  InitSettings.maxLifeExpectancy
-);
+export const InitSeed = CreateRandomSeed(InitSettings.dimension, InitSettings.max_states);
 
 /**
- * Constant/upperbound to the length of one dimension in the automaton/matrix.
- * The total number of cells in the automaton will be MaxDimensionLength ** 3.
- * @constant @type {number}
+ * Shared constant object with the max value usable by the user for things
+ * such as 3D matrix dimension or number of allowed neighbors per simulation mode.
+ * @constant
  */
-export const MaxDimensionLength = 20;
-
-/**
- * The max number of allowable neighbors for Conway's simulation mode.
- * This is mainly used to avoid inconsistent/impossible value in the
- * form mutation.
- * @constant @type {number}
- */
-export const MaxConwayNeighbors = 6;
-
-/**
- * The max number of allowable neighbors for Von Neumann's simulation mode.
- * This is mainly used to avoid inconsistent/impossible value in the form mutation.
- * @constant @type {number}
- */
-export const MaxVonNeumannNeighbors = 26;
+export const MaxValues = {
+  Dimension: 20,
+  Neighbors: { ['conway']: 6, ['von-neumann']: 26 },
+};

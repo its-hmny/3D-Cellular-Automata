@@ -1,14 +1,10 @@
 import { Button, Grid, Input, Radio, theme } from '@nextui-org/react';
 import { Checkmark, Close } from 'grommet-icons';
-import { useCallback, useMemo, useState } from 'react';
+import { useCallback, useState } from 'react';
 
 import { CreateRandomSeed, ExportSeed, ImportSeed } from '../automata/seed';
 import { useSimulation } from '../context/Simulation';
-import {
-  MaxConwayNeighbors,
-  MaxDimensionLength,
-  MaxVonNeumannNeighbors,
-} from '../schema/constant';
+import { MaxValues } from '../schema/constant';
 import { Settings } from '../schema/types';
 
 type Props = { onDiscard: () => void; onSave: (settings: Settings) => void };
@@ -25,18 +21,12 @@ const Form = ({ onDiscard, onSave }: Props) => {
   const { settings, setSeed } = useSimulation();
 
   // Internal state that stores the current/changed settings
-  const [newSettings, setNewSettings] = useState(settings);
-
-  // Updates the max number of neighbors available based on the simulation mode
-  const MaxNeighbor = useMemo(
-    () => (newSettings.mode === 'conway' ? MaxConwayNeighbors : MaxVonNeumannNeighbors),
-    [newSettings.mode]
-  );
+  const [newSettings, setNewSettings] = useState({ ...settings });
 
   // Generates and sets a new random seed
   const SeedRandom = useCallback(
-    () => setSeed(CreateRandomSeed(settings.dimension, settings.maxLifeExpectancy)),
-    [setSeed, settings.dimension, settings.maxLifeExpectancy]
+    () => setSeed(CreateRandomSeed(settings.dimension, settings.max_states)),
+    [setSeed, settings.dimension, settings.max_states]
   );
 
   // Imports and generates a seed from a file provided by the user
@@ -107,7 +97,7 @@ const Form = ({ onDiscard, onSave }: Props) => {
             color="primary"
             label="Matrix size"
             value={newSettings.dimension}
-            max={MaxDimensionLength}
+            max={MaxValues.Dimension}
             helperText="The number of cell per side in the matrix"
             onChange={e =>
               setNewSettings({ ...newSettings, dimension: parseInt(e.target.value, 10) })
@@ -119,12 +109,12 @@ const Form = ({ onDiscard, onSave }: Props) => {
             type="number"
             color="primary"
             label="Life states"
-            value={newSettings.maxLifeExpectancy}
+            value={newSettings.max_states}
             helperText="The max age reachable by any given cell"
             onChange={e =>
               setNewSettings({
                 ...newSettings,
-                maxLifeExpectancy: parseInt(e.target.value, 10),
+                max_states: parseInt(e.target.value, 10),
               })
             }
           />
@@ -134,13 +124,13 @@ const Form = ({ onDiscard, onSave }: Props) => {
             type="number"
             color="primary"
             label="Spawn threshold"
-            max={MaxNeighbor}
-            value={newSettings.spawnThreshold}
+            value={newSettings.lim_spawn}
+            max={MaxValues.Neighbors[newSettings.mode]}
             helperText="Number of alive neighbor for a cell to spawn"
             onChange={e =>
               setNewSettings({
                 ...newSettings,
-                spawnThreshold: parseInt(e.target.value, 10),
+                lim_spawn: parseInt(e.target.value, 10),
               })
             }
           />
@@ -150,13 +140,13 @@ const Form = ({ onDiscard, onSave }: Props) => {
             type="number"
             color="primary"
             label="Survive threshold"
-            max={MaxNeighbor}
-            value={newSettings.surviveThreshold}
+            value={newSettings.lim_survive}
+            max={MaxValues.Neighbors[newSettings.mode]}
             helperText="Number of alive neighbor for a cell to survive"
             onChange={e =>
               setNewSettings({
                 ...newSettings,
-                surviveThreshold: parseInt(e.target.value, 10),
+                lim_survive: parseInt(e.target.value, 10),
               })
             }
           />
