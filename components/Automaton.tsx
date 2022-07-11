@@ -11,14 +11,17 @@ const Automaton = () => {
   // Retrieves the needed data from the SimulationContext
   const { settings, simulator } = useSimulation();
 
-  // TODO this doesn't work, try a version with useFrame and canvasRef
-  // Memoized version of the camera position bases on the number of cells in the matrix
+  // ! TODO this doesn't work, try a version with useFrame and canvasRef
+  // Memoized version of the camera position based on the 3D matrix dimension
   const cameraPos = useMemo(() => [2, 1, settings.dimension + 5], [settings.dimension]);
 
   // Memoized version of the automaton's cells, each cell will update independently
   const toRender = useMemo(() => {
-    const cells: Array<ReactNode> = []; // Vector with aggregate list of cell to be rendered
-    // Computes the offset to apply in order to obtains cartesian coords from the center
+    // Vector with aggregate list of cell to be rendered
+    const cells: Array<ReactNode> = []; 
+    // Computes the offset to apply to each coordinates set in order to obtains cartesian
+    // coords from the center. This is needed in order to position the center of the matrix
+    // at the center of the canvas and the use simply <OrbitControls /> to handle movement.
     const offset = Math.round(settings.dimension / 2);
 
     // Allocates all the needed automaton Cells

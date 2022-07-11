@@ -30,10 +30,13 @@ const Drawer = ({ isOpen, onClose, children }: Props) => {
       {/* Drawer Header */}
       <Card.Header>
         <Grid.Container gap={1}>
+          {/* Drawer Header Title */}
           <Grid xs={12} direction="row" justify="space-between" alignItems="center">
             <Text h3>Simulation settings</Text>
             <Close onClick={onClose} />
           </Grid>
+
+          {/* Drawer Header Description */}
           <Grid xs={12}>
             <Text css={Style.Subtitle}>
               Here you will be able to tweak your simulation settings. <br />

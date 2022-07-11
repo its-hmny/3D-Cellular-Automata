@@ -1,11 +1,12 @@
-import { ChangeEvent } from 'react';
-import { Coords, Mode, Settings } from '../schema/types';
+import { Coords, Settings } from '../schema/types';
 
 /**
  * Given the coords of a cell and the dimension length, computes the
  * index to be used in the 'linearized' matrix.
  * It can also be safely used as UID/Key f the cell.
  * @function
+ * @param coords - The coordinates to convert back
+ * @param dim_length - The length of each dimension
  */
 export const Coords2Index = (coords: Coords, dim_length: number) => {
   const [x, y, z] = coords;
@@ -45,8 +46,13 @@ const IsNeighbor = {
  * context, returns a list of coordinates for each valid neighbor.
  * This list will be have 6 items with mode="conway" and 26 with mode="con-neumann".
  * @function
+ * @param coords - The coordinates of the current/center cell
+ * @param settings - The setting object with rules and params
  */
-export const GetNeighbors = (coords: Coords, dim_length: number, mode: Mode) => {
+export const GetNeighbors = (coords: Coords, settings: Settings) => {
+  // Destructure the required params from the setting object
+  const { dimension, mode } = settings;
+
   // Allocates the neighbor list
   const list: Coords[] = [];
   // Destructure the single components of the current cells
@@ -54,7 +60,7 @@ export const GetNeighbors = (coords: Coords, dim_length: number, mode: Mode) => 
 
   // Inline function to check that some coords are inside the "area" of the cube
   const IsInBoundaries = (delta: number, start: number) =>
-    delta <= start + 1 && delta >= 0 && delta < dim_length;
+    delta <= start + 1 && delta >= 0 && delta < dimension;
 
   // Yeld the coordinates of each neighbor based on the simulation mode
   for (let x1 = x0 - 1; IsInBoundaries(x1, x0); x1++)
@@ -69,16 +75,19 @@ export const GetNeighbors = (coords: Coords, dim_length: number, mode: Mode) => 
  * Based on the previous state and the execution settings (the thresholds)
  * computes and returns the new cell state.
  * @function
+ * @param cellAge - The current cell state/age
+ * @param nAlive - The number of alive neighbors
+ * @param settings - The setting object with rules and params
  */
-export const NewCellState = (prev: number, nAlive: number, settings: Settings) => {
+export const NewCellState = (cellAge: number, nAlive: number, settings: Settings) => {
   // Destructure the required params from the setting object
-  const { spawnThreshold, surviveThreshold, maxLifeExpectancy } = settings;
+  const { lim_spawn, lim_survive, max_states } = settings;
 
   // If the cell is dead but the spawn threshold has been reached then the cell is born
-  if (prev === 0 && nAlive >= spawnThreshold) return maxLifeExpectancy;
+  if (cellAge === 0 && nAlive >= lim_spawn) return max_states;
 
   // If the cell is alive and the survive threshold has been reached then the cell is aged
-  if (prev !== 0 && nAlive >= surviveThreshold) return --prev;
+  if (cellAge !== 0 && nAlive >= lim_survive) return --cellAge;
 
   return 0; // Else the cell stays dead
 };

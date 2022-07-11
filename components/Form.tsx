@@ -34,7 +34,7 @@ const Form = ({ onDiscard, onSave }: Props) => {
 
   // Exports the current seed to a JSON files
   const SeedExport = useCallback(
-    // TODO This sucks, fix it
+    // TODO The current implementation sucks, must fix it
     () => setSeed(current => (ExportSeed(current), current)),
     [setSeed]
   );
@@ -43,7 +43,7 @@ const Form = ({ onDiscard, onSave }: Props) => {
 
   return (
     <>
-      {/* Initial seed management */}
+      {/* Seed management (random/import/export) */}
       <Grid.Container gap={2} css={Style.Section}>
         <Grid xs={4} justify="center">
           <Button color="warning" flat auto onClick={SeedRandom}>

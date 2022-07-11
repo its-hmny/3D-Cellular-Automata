@@ -4,7 +4,7 @@ import type { AppProps } from 'next/app';
 import { SimulationProvider } from '../context/Simulation';
 
 const MyApp = ({ Component, pageProps }: AppProps) => {
-  // Custom NextUI app theme (dark + orange)
+  // Custom NextUI app theme (dark + orange as primary color)
   const theme = createTheme({ type: 'dark', theme: { colors: { primary: 'orange' } } });
 
   return (

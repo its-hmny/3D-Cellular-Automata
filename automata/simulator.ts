@@ -2,18 +2,27 @@ import { Coords, Settings } from '../schema/types';
 import { Coords2Index, GetNeighbors, NewCellState } from './helpers';
 
 export class Simulator {
-  // The first is always the current while the other is the older or the newer (WIP) one
-  // The mechanism is similar to how the Virtual DOM (VDOM) in React works, there a current
-  // generation (used by the components) and a virtual one which undergoes the changes/updates
-  // when the updates have been completed the generations are switched and the role inverted.
+  // The first item in the tuple is always the current generation while the other is the older
+  // or the newer/wip one (depends on the moment).
+  // The mechanism used is similar to how the Virtual DOM (VDOM) in React works, there is a
+  // current generation (used by the components to render on the client) and a virtual one which
+  // undergoes the changes, updates and mutations. When the updates have been completed then the
+  // generations are switched and the role inverted seamlessly.
   private generations: [Uint8Array, Uint8Array];
 
-  // This private function are the "curryified" version the functions provided/exported
-  // by helper.ts, they're binded during construction with the settings object
+  // This private function are the "closured" version the functions provided/exported
+  // by helper.ts, they're bounded during construction with the settings object
   private Coords2Index: (coords: Coords) => number;
-  private NewCellState: (cellAge: number, nAlive: number) => number;
   private GetNeighbors: (coords: Coords) => Coords[];
+  private NewCellState: (cellAge: number, nAlive: number) => number;
 
+  /**
+   * Allocates the matrix tuples based on the seed and settings dimension.
+   * Assigns the "closured" function with the updated closured settings object.
+   * @constructor
+   * @param settings - The simulation settings/rules
+   * @param seed - The initial generation
+   */
   public constructor(settings: Settings, seed: Uint8Array) {
     // Makes a copy of the seed as initial generation and creates an empty buffer/array
     this.generations = [seed.slice(), new Uint8Array(settings.dimension ** 3)];
@@ -25,13 +34,19 @@ export class Simulator {
       NewCellState(cellAge, nAlive, settings);
   }
 
-  // Returns the current (active) generation
+  /**
+   * Returns the current (active) generation (this is a simple setter).
+   * @public @method
+   */
   public CurrentGeneration() {
     const [current] = this.generations;
     return current;
   }
 
-  // Derive the new generation, making changes to the other matrix and then reversing the array
+  /**
+   * Derive the new generation, making changes to the "old" matrix making it the "new" one.
+   * @public @method
+   */
   public NextGeneration() {
     // Destructure the current generation and the new one buffers/arrays
     const [older, newer] = this.generations;

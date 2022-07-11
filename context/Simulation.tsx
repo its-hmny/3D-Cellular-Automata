@@ -26,7 +26,7 @@ export const useSimulation = () => {
 
 export const SimulationProvider = ({ children }: { children: ReactNode }) => {
   // Mutable, shared and readonly reference to the simulator.
-  // Having this reference allows to generate a new generation on-demand and get the current one
+  // Having this reference allows to generate a new generation on-demand and/or get the current one.
   const simulator = useRef<Simulator>(new Simulator(InitSettings, InitSeed));
 
   // Internal state that stores the initial seed of the Simulator
@@ -34,13 +34,13 @@ export const SimulationProvider = ({ children }: { children: ReactNode }) => {
   // Shared state that stores the Simulator's rules
   const [settings, setSettings] = useState<Settings>(InitSettings);
 
-  // If the dimension or the max life expectancy have been changed it is
-  // necessary then to recreate a new random seed
+  // If the dimension or the max life expectancy have been changed it is necessary
+  // then to recreate a new random seed with the proper dimension and cells age.
   useEffect(() => {
-    setSeed(CreateRandomSeed(settings.dimension, settings.maxLifeExpectancy));
-  }, [settings.dimension, settings.maxLifeExpectancy]);
+    setSeed(CreateRandomSeed(settings.dimension, settings.max_states));
+  }, [settings.dimension, settings.max_states]);
 
-  // Whenever the settings or the seed changes the Simulator is recreated
+  // Whenever the settings or the seed changes the Simulator is recreated from scratch.
   useEffect(() => {
     simulator.current = new Simulator(settings, seed);
   }, [seed, settings]);

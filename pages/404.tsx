@@ -1,12 +1,11 @@
-import { Button, Grid, Link, Text } from '@nextui-org/react';
+import { Button, Grid, Image, Link, Text } from '@nextui-org/react';
 import type { NextPage } from 'next';
-import Image from 'next/image';
 import Router from 'next/router';
 
 const NotFound: NextPage = () => {
   return (
     <Grid.Container justify="center" alignItems="center" css={{ h: '100vh' }}>
-      {/* Image */}
+      {/* Site logo image */}
       <Grid xs={3}>
         <Image src="/logo.png" height="250px" width="253px" alt="Site logo" />
       </Grid>
@@ -20,7 +19,7 @@ const NotFound: NextPage = () => {
           </Text>
         </Grid>
 
-        {/* Page description */}
+        {/* Error message and "Return Home" button */}
         <Grid xs={12} direction="column">
           <Text h5>
             The page you&apos;re looking for doesn&apos;t seem to exist, please double

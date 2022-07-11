@@ -2,7 +2,7 @@ import { CssBaseline } from '@nextui-org/react';
 import type { DocumentContext, DocumentInitialProps } from 'next/document';
 import Document, { Head, Html, Main, NextScript } from 'next/document';
 
-// ! Boilerplate/configuration of Next.js in order to work with NextUI
+// ! NOTE: Boilerplate/configuration of Next.js in order to work with NextUI component library.
 class NextDocument extends Document {
   static async getInitialProps(ctx: DocumentContext): Promise<DocumentInitialProps> {
     const initialProps = await Document.getInitialProps(ctx);

@@ -5,11 +5,11 @@ import { useCallback, useMemo, useState } from 'react';
 import { useSimulation } from '../context/Simulation';
 
 const Controls = () => {
-  // Destructure the needed fields and function from context
+  // Destructure the needed fields and function from SimulationContext
   const { simulator, setSeed } = useSimulation();
 
   // Internal state to keep track of the current simulation id to start/stop the latter
-  const [simulationId, setSimulationId] = useState<any>();
+  const [simulationId, setSimulationId] = useState<NodeJS.Timer | undefined>();
 
   // Memoized version of the (shared) props for icons and buttons
   const [ButtonProps, IconProps] = useMemo(() => {
@@ -18,7 +18,7 @@ const Controls = () => {
     return [button, icon];
   }, []);
 
-  // Starts the simulation of with the given settings/simulator
+  // Starts/Resume the "automatic" simulation.
   const start = useCallback(() => {
     // Every 100 milliseconds a new generation is created and set as the current one.
     const intervalId = setInterval(() => simulator.current.NextGeneration(), 100);
@@ -26,7 +26,7 @@ const Controls = () => {
     setSimulationId(intervalId);
   }, [simulator]);
 
-  // Stops the current simulation, it can be resumed later eventually
+  // Stops the current simulation (can be resumed later).
   const stop = useCallback(() => {
     // If the interval has been already stopped returns early
     if (simulationId === undefined) return;
@@ -35,16 +35,18 @@ const Controls = () => {
     setSimulationId(undefined); // Sets the intervalId state back to undefined
   }, [simulationId]);
 
-  // Stops the current simulation, and reset the simulator by changing the seed
+  // Stops the current simulation, and allows the user to proceed one generation at time.
   const step = useCallback(() => {
-    stop(); // Stops the current "automatic simulation" (if available)
-    // Advances the simulation, deriving a new generation "manually"
+    // Stops the current "automatic simulation" (if available)
+    stop(); 
+    // Advances the simulation by deriving a new generation "manually"
     simulator.current.NextGeneration();
   }, [simulator, stop]);
 
-  // Stops the current simulation, and reset the simulator by changing the seed
+  // Stops the current simulation, and resets the simulator to its initial state
   const restart = useCallback(() => {
-    stop(); // Stops the current "automatic simulation" (if available)
+    // Stops the current "automatic simulation" (if available)
+    stop();
     // This simple trick reallocates the same seed but with a different memory location
     // this signal to React an effective state changes but the state are equal to one another
     setSeed(prev => prev.slice());

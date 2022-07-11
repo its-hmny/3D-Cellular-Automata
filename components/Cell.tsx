@@ -4,11 +4,7 @@ import { MutableRefObject, useState } from 'react';
 import { Simulator } from '../automata/simulator';
 import { Coords } from '../schema/types';
 
-type Props = {
-  id: number;
-  coords: Coords;
-  simulator: MutableRefObject<Simulator>;
-};
+type Props = { id: number; coords: Coords; simulator: MutableRefObject<Simulator> };
 
 // ! NOTE: age_matrix must be passed as props since React doesn't support context in canvas
 const Cell = ({ id, coords, simulator }: Props) => {

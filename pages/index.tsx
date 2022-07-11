@@ -25,8 +25,9 @@ const Home: NextPage = () => {
 
   // Aggregate function that mutates the context and closes the modal onSave
   const onSaveSettings = useCallback(
-    (patch: Settings) => {
-      setSettings(patch); // Updates the context state (that, in turns, updates the Simulator)
+    (newSettings: Settings) => {
+      // Updates the context state (that, in turns, updates the Simulator)
+      setSettings(newSettings);
       setOpen(prev => !prev); // Closes the modal upon completion
     },
     [setSettings]
