@@ -10,7 +10,7 @@ import {
   useState,
 } from 'react';
 
-import { CreateRandomSeed } from '../automata/helpers';
+import { CreateRandomSeed } from '../automata/seed';
 import { Simulator } from '../automata/simulator';
 import { InitSeed, InitSettings } from '../schema/constant';
 import { Settings } from '../schema/types';

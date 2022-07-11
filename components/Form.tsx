@@ -2,7 +2,7 @@ import { Button, Grid, Input, Radio, theme } from '@nextui-org/react';
 import { Checkmark, Close } from 'grommet-icons';
 import { useCallback, useMemo, useState } from 'react';
 
-import { CreateRandomSeed, ExportSeed, ImportSeed } from '../automata/helpers';
+import { CreateRandomSeed, ExportSeed, ImportSeed } from '../automata/seed';
 import { useSimulation } from '../context/Simulation';
 import {
   MaxConwayNeighbors,

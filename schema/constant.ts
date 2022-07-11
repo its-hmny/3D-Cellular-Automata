@@ -1,5 +1,4 @@
-import { CreateRandomSeed } from '../automata/helpers';
-import { Settings } from './types';
+import { CreateRandomSeed } from '../automata/seed';
 
 /**
  * Default setting used on first load of the webpage
