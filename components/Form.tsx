@@ -1,10 +1,12 @@
+import { yupResolver } from '@hookform/resolvers/yup';
 import { Button, Grid, Input, Radio, theme } from '@nextui-org/react';
 import { Checkmark, Close } from 'grommet-icons';
-import { useCallback, useState } from 'react';
+import { useCallback } from 'react';
+import { Controller, useForm } from 'react-hook-form';
 
 import { CreateRandomSeed, ExportSeed, ImportSeed } from '../automata/seed';
 import { useSimulation } from '../context/Simulation';
-import { MaxValues } from '../schema/constant';
+import { SettingsSchema } from '../schema/constant';
 import { Settings } from '../schema/types';
 
 type Props = { onDiscard: () => void; onSave: (settings: Settings) => void };
@@ -20,8 +22,25 @@ const Form = ({ onDiscard, onSave }: Props) => {
   // Retrieves the current simulation settings from context
   const { settings, setSeed } = useSimulation();
 
-  // Internal state that stores the current/changed settings
-  const [newSettings, setNewSettings] = useState({ ...settings });
+  // react-hook-form setup and initializations
+  const { control, register, handleSubmit, formState } = useForm({
+    mode: 'onBlur',
+    defaultValues: settings,
+    resolver: yupResolver(SettingsSchema),
+  });
+
+  // Helper function to determine if an input field is valid or invalid
+  const isValid = useCallback(
+    (name: keyof Settings, defaultMsg: string) => {
+      // If an error is not present then the user will be showed a simple explanatory msg
+      if (!formState.errors[name])
+        return { helperText: defaultMsg, color: 'primary' } as const;
+
+      // When an error is present the field will become red and present a msg to the user
+      return { helperText: formState.errors[name]?.message, color: 'error' } as const;
+    },
+    [formState.errors]
+  );
 
   // Generates and sets a new random seed
   const SeedRandom = useCallback(
@@ -38,8 +57,6 @@ const Form = ({ onDiscard, onSave }: Props) => {
     () => setSeed(current => (ExportSeed(current), current)),
     [setSeed]
   );
-
-  // TODO Add validation and automatic updates with tools like react-hook-form and yup
 
   return (
     <>
@@ -65,27 +82,28 @@ const Form = ({ onDiscard, onSave }: Props) => {
       {/* Simulation modes radio buttons */}
       <Grid.Container gap={2} css={Style.Section}>
         <Grid xs={12}>
-          <Radio.Group
-            label="Simulation mode"
-            defaultValue={settings.mode}
-            // @ts-ignore
-            onChange={value => setNewSettings({ ...newSettings, mode: value })}
-          >
-            <Radio
-              size="sm"
-              value="conway"
-              description="Evaluates only the 6 face adjacent neighbors"
-            >
-              Conway
-            </Radio>
-            <Radio
-              size="sm"
-              value="von-neumann"
-              description="Evaluates the whole 26 neighbors"
-            >
-              Von Neumann
-            </Radio>
-          </Radio.Group>
+          <Controller
+            name="mode"
+            control={control}
+            render={({ field: { value, onChange } }) => (
+              <Radio.Group label="Simulation mode" value={value} onChange={onChange}>
+                <Radio
+                  size="sm"
+                  value="conway"
+                  description="Evaluates only the 6 face adjacent neighbors"
+                >
+                  Conway
+                </Radio>
+                <Radio
+                  size="sm"
+                  value="von-neumann"
+                  description="Evaluates the whole 26 neighbors"
+                >
+                  Von Neumann
+                </Radio>
+              </Radio.Group>
+            )}
+          />
         </Grid>
       </Grid.Container>
 
@@ -94,61 +112,33 @@ const Form = ({ onDiscard, onSave }: Props) => {
         <Grid xs={6}>
           <Input
             type="number"
-            color="primary"
             label="Matrix size"
-            value={newSettings.dimension}
-            max={MaxValues.Dimension}
-            helperText="The number of cell per side in the matrix"
-            onChange={e =>
-              setNewSettings({ ...newSettings, dimension: parseInt(e.target.value, 10) })
-            }
+            {...register('dimension')}
+            {...isValid('dimension', 'The number of cell per side in the matrix')}
           />
         </Grid>
         <Grid xs={6}>
           <Input
             type="number"
-            color="primary"
             label="Life states"
-            value={newSettings.max_states}
-            helperText="The max age reachable by any given cell"
-            onChange={e =>
-              setNewSettings({
-                ...newSettings,
-                max_states: parseInt(e.target.value, 10),
-              })
-            }
+            {...register('max_states')}
+            {...isValid('max_states', 'The max age reachable by any given cell')}
           />
         </Grid>
         <Grid xs={6}>
           <Input
             type="number"
-            color="primary"
             label="Spawn threshold"
-            value={newSettings.lim_spawn}
-            max={MaxValues.Neighbors[newSettings.mode]}
-            helperText="Number of alive neighbor for a cell to spawn"
-            onChange={e =>
-              setNewSettings({
-                ...newSettings,
-                lim_spawn: parseInt(e.target.value, 10),
-              })
-            }
+            {...register('lim_spawn')}
+            {...isValid('lim_spawn', 'Number of alive neighbor for a cell to spawn')}
           />
         </Grid>
         <Grid xs={6}>
           <Input
             type="number"
-            color="primary"
             label="Survive threshold"
-            value={newSettings.lim_survive}
-            max={MaxValues.Neighbors[newSettings.mode]}
-            helperText="Number of alive neighbor for a cell to survive"
-            onChange={e =>
-              setNewSettings({
-                ...newSettings,
-                lim_survive: parseInt(e.target.value, 10),
-              })
-            }
+            {...register('lim_survive')}
+            {...isValid('lim_survive', 'Number of alive neighbor for a cell to survive')}
           />
         </Grid>
       </Grid.Container>
@@ -170,7 +160,7 @@ const Form = ({ onDiscard, onSave }: Props) => {
             flat
             color="success"
             icon={<Checkmark color={theme.colors.success.value} />}
-            onClick={() => onSave(newSettings)}
+            onClick={handleSubmit(onSave)}
           >
             Save
           </Button>
