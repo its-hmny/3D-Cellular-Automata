@@ -22,7 +22,7 @@ The webapp allows to import, export or generate a random seed as well as tweak w
 To install the dependencies and run the webapp locally, simply type in your terminal:
 
 ```bash
-  # NOTE: Also npm or pnpm can be used as well
+  # NOTE: npm or pnpm can be used as well
   yarn install
   yarn start:dev
 ```
