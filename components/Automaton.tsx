@@ -27,7 +27,7 @@ const Automaton = () => {
           // Initializes the cartesian plan coords
           const coords: Coords = [x - offset, y - offset, z - offset];
           // Creates linearized index to access the ageMatrix that act both as key
-          const id = Coords2Index(coords, settings.dimension);
+          const id = Coords2Index([x, y, z], settings.dimension);
           // Adds the cell to the render list
           cells.push(<Cell key={id} {...{ simulator, coords, id }} />);
         }
