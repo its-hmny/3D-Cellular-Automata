@@ -1,5 +1,5 @@
 <p align="center">
-    <img alt="Logo" width="400" src=https://github.com/its-hmny/3D-Cellular-Automata/blob/main/public/logo.png?raw=true">
+    <img alt="Logo" width="400" src="https://github.com/its-hmny/3D-Cellular-Automata/blob/main/public/logo.png?raw=true">
 </p>
 
 <p align="center">
